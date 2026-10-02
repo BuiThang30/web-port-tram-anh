@@ -1,0 +1,311 @@
+/* Figma 1920px -> code 1440px (mọi số px đã nhân 0.75). Chiều cao trang đổi theo từng tab (inline style). */
+
+.page {
+  --font-bubbles: var(--font-rubik), sans-serif;
+  --font-content: var(--font-nexa), sans-serif;
+
+  position: relative;
+  margin: 0 auto;
+  width: 1440px;
+  overflow: hidden;
+  background: #464973;
+  color: #fff;
+  font-family: var(--font-content);
+  transition: height 0.35s ease;
+}
+
+.page * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Nền: rộng full 1440px, cắt từ TRÊN xuống hết chiều cao trang */
+.bg { object-fit: cover; object-position: top center; }
+
+/* ===== Kính ===== */
+.glass {
+  position: relative;
+  background: radial-gradient(50% 50% at 75% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  -webkit-backdrop-filter: blur(15.75px);
+  backdrop-filter: blur(15.75px);
+  border-radius: var(--r, 500px);
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2.25px;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel {
+  position: absolute;
+  --r: 15px;
+  transition: left 0.35s ease, top 0.35s ease, width 0.35s ease, height 0.35s ease;
+}
+
+/* khung tối của màn xem slide tranh thờ */
+.dark { background: rgba(9, 96, 168, 0.55); }
+
+/* ===== Nội dung ===== */
+.content {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: fade 0.35s ease;
+}
+
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.text {
+  position: absolute;
+  font-size: 15px;          /* 20px */
+  font-weight: 400;
+  line-height: 18.75px;     /* 25px */
+}
+
+.center { text-align: center; }
+
+.caption {
+  color: #fff;
+  text-decoration: underline;
+  pointer-events: auto;
+}
+
+.pic { position: absolute; }
+.round { border-radius: 15px; overflow: hidden; }
+.cover { object-fit: cover; }
+.contain { object-fit: contain; }
+
+.ring { position: absolute; padding: 7.5px; border-radius: 50%; }
+.ringInner { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
+
+/* ===== Concert: khung ảnh thay phiên (crossfade) ===== */
+.fadeBox { position: absolute; border-radius: 15px; overflow: hidden; }
+.fadeImg { object-fit: cover; opacity: 0; transition: opacity 0.9s ease; }
+.fadeOn { opacity: 1; }
+
+/* ===== Photo essay: dải ảnh tự chạy ngang ===== */
+.strip {
+  position: absolute;
+  left: 720px;
+  top: 468.75px;
+  width: 632.25px;
+  height: 222px;
+  display: flex;
+  gap: 7.5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  pointer-events: auto;
+  cursor: grab;
+  scrollbar-width: none;
+}
+
+.strip::-webkit-scrollbar { display: none; }
+
+.stripImg {
+  flex: none;
+  width: auto;
+  height: 222px;
+  border-radius: 13.5px;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* ===== Incense: video + recap ===== */
+.video {
+  position: absolute;
+  left: 821.25px;
+  top: 563.25px;
+  width: 439.5px;
+  height: 260.25px;
+  border: 0;
+  border-radius: 12px;
+  pointer-events: auto;
+}
+
+.recapTitle {
+  position: absolute;
+  left: 688.5px;
+  top: 896px;
+  width: 693px;
+  text-align: center;
+  font-size: 19.5px;
+  font-weight: 400;
+}
+
+.recap {
+  position: absolute;
+  left: 725.6px;
+  top: 941.25px;
+  display: grid;
+  grid-template-columns: 301.5px 313.5px;
+  grid-auto-rows: 175.5px;
+  gap: 7.5px 6px;
+}
+
+.recapItem { position: relative; border-radius: 15px; overflow: hidden; }
+
+/* ===== Patheon: menu con ===== */
+.sub {
+  position: absolute;
+  border: none;
+  background: none;
+  font-family: var(--font-bubbles);
+  font-size: 19.5px;        /* 26px */
+  font-weight: 400;
+  line-height: 23.4px;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sub:hover, .subOn { color: #fff; }
+
+/* ===== Patheon: slide ===== */
+.arrow {
+  position: absolute;
+  top: 424px;
+  width: 21px;
+  height: 22.5px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.15s ease;
+}
+
+.arrow:hover { transform: scale(1.15); }
+.arrowL { left: 716.25px; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+.arrowR { left: 1351.5px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+
+.slide {
+  position: absolute;
+  left: 765.75px;
+  top: 186.75px;
+  width: 570px;
+  display: flex;
+  gap: 30px;
+  animation: fade 0.3s ease;
+}
+
+.slideImg { position: relative; flex: none; }
+.slideText { flex: 1; min-width: 0; }
+
+.slideTitle {
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 26px;
+  margin-bottom: 16px;
+}
+
+.poem {
+  font-size: 13.5px;
+  line-height: 17.25px;
+  white-space: pre-line;
+}
+
+/* ảnh trái - chữ phải */
+.slide_left  { flex-direction: row; align-items: center; }
+.slide_right { flex-direction: row-reverse; }
+.slide_left .slideImg { width: 255px; height: 540px; }
+
+/* tiêu đề dài chạy ngang cả khung: slide dịch lên, chừa chỗ cho tiêu đề */
+.wide { top: 150px; padding-top: 42px; }
+.titleWide { position: absolute; left: 0; top: 0; margin: 0; }
+
+/* layout right: cột phải gồm ảnh + poem2 bên dưới */
+.slideSide { flex: none; width: 255px; display: flex; flex-direction: column; gap: 12px; }
+.slideSide .slideImg { width: 100%; height: 250px; }
+
+/* ảnh trên/dưới - thơ chia 2 cột */
+.slide_top    { flex-direction: column; gap: 16px; }
+.slide_bottom { flex-direction: column-reverse; gap: 16px; }
+.slide_top .slideImg, .slide_bottom .slideImg { width: 100%; height: 250px; }
+/* có poem2 -> 2 cột cố định; không có -> CSS tự chia 2 cột */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.slide_top .slideText > .poem, .slide_bottom .slideText > .poem { columns: 2; column-gap: 30px; }
+
+/* ===== Breadcrumb ===== */
+.crumb {
+  position: absolute;
+  left: 75px;
+  top: 32.25px;
+  height: 28.5px;
+  padding: 0 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4.5px;
+  --r: 15px;
+  font-family: var(--font-bubbles);
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
+.crumb a { color: inherit; text-decoration: none; }
+
+/* ===== Menu trái ===== */
+.nav {
+  position: absolute;
+  left: 75px;
+  top: 82.5px;
+  width: 345px;
+  display: flex;
+  flex-direction: column;
+  gap: 19.5px;
+  font-family: var(--font-bubbles);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 35.25px;
+  text-transform: uppercase;
+}
+
+.nav a { color: rgba(255, 255, 255, 0.4); text-decoration: none; transition: color 0.2s ease; }
+.nav a:hover { color: #fff; }
+.nav a.navActive { color: #fff; }
+
+/* ===== 5 nút ===== */
+.pills {
+  position: absolute;
+  left: 75px;
+  top: 435.75px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.pill {
+  height: 42.75px;
+  padding: 0 22.5px;
+  display: flex;
+  align-items: center;
+  border: none;
+  font-family: var(--font-bubbles);
+  font-size: 22.5px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.pillActive {
+  background: #fff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: #1576d0;
+}
+
+.pillActive::before { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .content, .slide { animation: none; }
+  .fadeImg { transition: none; }
+  .page, .panel, .pill, .nav a, .sub { transition: none; }
+}

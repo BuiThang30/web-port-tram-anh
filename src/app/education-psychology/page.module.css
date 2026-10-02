@@ -1,0 +1,201 @@
+/* Figma 1920x1080 -> code 1440x810 (mọi số px đã nhân 0.75) */
+
+.page {
+  --font-bubbles: var(--font-rubik), sans-serif;
+  --font-content: var(--font-nexa), sans-serif;
+
+  position: relative;
+  margin: 0 auto;
+  width: 1440px;
+  height: 810px;
+  overflow: hidden;
+  background: #464973;
+  color: #fff;
+  font-family: var(--font-content);
+}
+
+.page * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Nền: rộng full 1440px, cắt từ TRÊN xuống hết chiều cao trang */
+.bg { object-fit: cover; object-position: top center; }
+
+/* ===== Kính ===== */
+.glass {
+  position: relative;
+  background: radial-gradient(50% 50% at 75% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  -webkit-backdrop-filter: blur(15.75px);
+  backdrop-filter: blur(15.75px);
+  border-radius: var(--r, 500px);
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2.25px;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel {
+  position: absolute;
+  --r: 15px;
+  transition: left 0.35s ease, top 0.35s ease, width 0.35s ease, height 0.35s ease;
+}
+
+/* ===== Nội dung ===== */
+.content {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: fade 0.35s ease;
+}
+
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.text {
+  position: absolute;
+  font-size: 15px;          /* 20px */
+  font-weight: 400;
+  line-height: 18.75px;     /* 25px */
+}
+
+/* đoạn intro nhỏ hơn: 18px / 23px */
+.textSm { font-size: 13.5px; line-height: 17.25px; }
+
+.pic { position: absolute; border-radius: 12px; overflow: hidden; }
+.cover { object-fit: cover; }
+
+.ring { position: absolute; padding: 7.5px; border-radius: 50%; }
+.ringInner { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
+
+/* ===== Nút My Website ===== */
+.btn {
+  position: absolute;
+  left: 947.25px;
+  top: 542.25px;
+  height: 39px;
+  padding: 0 17px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-bubbles);
+  font-size: 19.5px;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  pointer-events: auto;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+/* ===== PAX: dải ảnh tự chạy ngang ===== */
+.strip {
+  position: absolute;
+  left: 683.25px;
+  top: 259.5px;
+  width: 689.25px;
+  height: 267px;
+  display: flex;
+  gap: 7.5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  pointer-events: auto;
+  cursor: grab;
+  scrollbar-width: none;
+}
+
+.strip::-webkit-scrollbar { display: none; }
+
+.stripImg {
+  flex: none;
+  width: auto;
+  height: 267px;
+  border-radius: 13.5px;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* ===== Breadcrumb ===== */
+.crumb {
+  position: absolute;
+  left: 75px;
+  top: 32.25px;
+  height: 28.5px;
+  padding: 0 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4.5px;
+  --r: 15px;
+  font-family: var(--font-bubbles);
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
+.crumb a { color: inherit; text-decoration: none; }
+
+/* ===== Menu trái ===== */
+.nav {
+  position: absolute;
+  left: 75px;
+  top: 82.5px;
+  width: 345px;
+  display: flex;
+  flex-direction: column;
+  gap: 19.5px;
+  font-family: var(--font-bubbles);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 35.25px;
+  text-transform: uppercase;
+}
+
+.nav a { color: rgba(255, 255, 255, 0.4); text-decoration: none; transition: color 0.2s ease; }
+.nav a:hover { color: #fff; }
+.nav a.navActive { color: #fff; }
+
+/* ===== 4 nút ===== */
+.pills {
+  position: absolute;
+  left: 75px;
+  top: 522px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18.75px;
+}
+
+.pill {
+  height: 45px;
+  padding: 0 22.5px;
+  display: flex;
+  align-items: center;
+  border: none;
+  font-family: var(--font-bubbles);
+  font-size: 22.5px;
+  font-weight: 400;
+  color: #fff;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.pillActive {
+  background: #fff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: #1576d0;
+}
+
+.pillActive::before { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .content { animation: none; }
+  .panel, .pill, .nav a, .btn { transition: none; }
+}

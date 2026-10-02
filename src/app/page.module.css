@@ -1,150 +1,188 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
+.home {
+  --font-bubbles: var(--font-rubik), sans-serif;
+  --font-londrina: var(--font-londrina-solid), sans-serif;
 
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  position: relative;
+  margin: 0 auto;
+  width: 1440px;
+  height: 1617px;
+  overflow: hidden;
+  background-color: #ffffff;
 }
 
-.main {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+/* reset nhỏ, chỉ áp dụng bên trong .home */
+.home * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
+.home a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
+.home img {
+  display: block;
 }
 
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
+/* ===== Nền 1920x2156 -> 1440x1617 ===== */
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 1617px;
+  object-fit: cover;
 }
 
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
-}
-
-.ctas a {
+/* ===== Bong bóng hướng dẫn (chữ 40px -> 30px) ===== */
+.box1 {
+  position: absolute;
+  left: 648.75px;
+  top: 81px;
+  width: 696.75px;
+  height: 120px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
+  gap: 7.5px;
+  padding: 22.5px;
+  border-radius: 375px;
+  background: radial-gradient(689.25px 705.75px at 0.9% 3%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  border: 2.25px solid rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(15.75px);
+  backdrop-filter: blur(15.75px);
+}
+
+.clickText {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--font-bubbles);
+  font-size: 30px;
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* ===== Rương kho báu: hover mở nắp ===== */
+.khoBau {
+  position: absolute;
+  left: 0;
+  top: 1209px;
+  width: 363.75px;
+  height: 408px;
+  display: block;
+}
+
+.khoImg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 363.75px;
+  height: 408px;
+  object-fit: cover;
+  transition: opacity 0.25s ease;
+}
+
+.khoImgOpen {
+  opacity: 0;
+}
+
+.khoBau:hover .khoImgClosed,
+.khoBau:focus-visible .khoImgClosed {
+  opacity: 0;
+}
+
+.khoBau:hover .khoImgOpen,
+.khoBau:focus-visible .khoImgOpen {
+  opacity: 1;
+}
+
+.box4 {
+  position: absolute;
+  left: 111px;
+  top: 174px;
+  width: 141.75px;
+  height: 141px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7.5px;
+  padding: 22.5px;
+  border-radius: 375px;
+  background: radial-gradient(192px 326.25px at 0.9% 3%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  border: 2.25px solid rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(15.75px);
+  backdrop-filter: blur(15.75px);
+}
+
+/* MY RESUME: 40px -> 30px, line-height 40px -> 30px */
+.myResume {
+  flex-shrink: 0;
+  font-family: var(--font-londrina);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ===== Nhãn: 52px -> 39px, khung 496px -> 372px ===== */
+.aboutMe,
+.cultureArts,
+.educationPsychology,
+.economics,
+.communityService {
+  position: absolute;
+  font-family: var(--font-bubbles);
+  font-size: 39px;
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+}
+
+.aboutMe             { left: 102.75px; top: 284.25px; width: 225px; }
+.cultureArts         { left: 480.75px; top: 367.5px;  width: 372px; }
+.educationPsychology { left: 843px;    top: 670.5px;  width: 372px; }
+.economics           { left: 371.25px; top: 999px;    width: 372px; }
+.communityService    { left: 855.75px; top: 1366.5px; width: 372px; }
+
+/* ===== 5 con cá ===== */
+.fish {
+  position: absolute;
+  display: block;
   cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
+  transition: opacity 0.3s ease;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
+.fish img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.ca1 { left: 147px;    top: 86.25px;  width: 153.75px; height: 176.25px; }
+.ca2 { left: 549.75px; top: 156.75px; width: 244.5px;  height: 195px;    }
+.ca3 { left: 906px;    top: 447px;    width: 261px;    height: 209.25px; }
+.ca4 { left: 360.75px; top: 718.5px;  width: 417px;    height: 268.5px;  }
+.ca5 { left: 905.25px; top: 936px;    width: 337.5px;  height: 477px;    }
+
+/* ===== HOVER: cá mờ đi khi rê vào cá hoặc chữ ===== */
+/* display: contents để <a> không làm đổi vị trí absolute của cá và nhãn */
+.fishLink {
+  display: contents;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+.fishLink:hover .fish,
+.fishLink:focus-visible .fish {
+  opacity: 0.55;
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
+@media (prefers-reduced-motion: reduce) {
+  .fish,
+  .khoImg {
+    transition: none;
   }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
-}
-
-.code {
-  font-family: var(--font-geist-mono);
-  font-size: 0.9em;
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
 }

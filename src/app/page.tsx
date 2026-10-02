@@ -1,69 +1,67 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Image from 'next/image';
+import { Rubik_Bubbles, Londrina_Solid } from 'next/font/google';
+import styles from './page.module.css';
 
+// Font nạp bằng next/font (không cần @import trong CSS)
+const rubik = Rubik_Bubbles({ weight: '400', subsets: ['latin'], variable: '--font-rubik' });
+const londrina = Londrina_Solid({ weight: '400', subsets: ['latin'], variable: '--font-londrina-solid' });
+
+/* Ảnh nằm trong public/image/ -> đường dẫn "/image/...".
+   width/height chỉ là kích thước gốc; kích thước hiển thị do page.module.css quyết định. */
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className={`${styles.home} ${rubik.variable} ${londrina.variable}`}>
+      <Image className={styles.bg} src="/image/background-home.png" alt="" width={1920} height={2156} priority />
+
+      <div className={styles.box1}>
+        <p className={styles.clickText}>
+          Click the fish you like to start Feeding Frenzy and explore Tram Anh&apos;s journey!
+        </p>
+      </div>
+
+      <a href="#" className={styles.khoBau} aria-label="My Resume">
+        <Image className={`${styles.khoImg} ${styles.khoImgClosed}`} src="/image/chest-closed.png" alt="" width={485} height={544} draggable={false} />
+        <Image className={`${styles.khoImg} ${styles.khoImgOpen}`} src="/image/chest-open.png" alt="" width={485} height={544} draggable={false} />
+        <div className={styles.box4}>
+          <p className={styles.myResume}>MY<br />RESUME</p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </a>
+
+      {/* Mỗi cá + nhãn chung 1 link: hover cá hoặc chữ đều làm cá mờ */}
+      <a href="/about" className={styles.fishLink}>
+        <div className={`${styles.fish} ${styles.ca1}`}>
+          <Image src="/image/fish-about.png" alt="" width={205} height={235} draggable={false} />
         </div>
-      </main>
+        <p className={styles.aboutMe}>ABOUT ME</p>
+      </a>
+
+      <a href="/culture-arts" className={styles.fishLink}>
+        <div className={`${styles.fish} ${styles.ca2}`}>
+          <Image src="/image/fish-culture.png" alt="" width={326} height={260} draggable={false} />
+        </div>
+        <p className={styles.cultureArts}>CULTURE &amp; ARTS</p>
+      </a>
+
+      <a href="/education-psychology" className={styles.fishLink}>
+        <div className={`${styles.fish} ${styles.ca3}`}>
+          <Image src="/image/fish-education.png" alt="" width={348} height={279} draggable={false} />
+        </div>
+        <p className={styles.educationPsychology}>EDUCATION &amp; PSYCHOLOGY</p>
+      </a>
+
+      <a href="/economics" className={styles.fishLink}>
+        <div className={`${styles.fish} ${styles.ca4}`}>
+          <Image src="/image/fish-economics.png" alt="" width={556} height={358} draggable={false} />
+        </div>
+        <p className={styles.economics}>ECONOMICS</p>
+      </a>
+
+      <a href="/community-service" className={styles.fishLink}>
+        <div className={`${styles.fish} ${styles.ca5}`}>
+          <Image src="/image/shark-community.png" alt="" width={450} height={636} draggable={false} />
+        </div>
+        <p className={styles.communityService}>COMMUNITY<br />SERVICE</p>
+      </a>
     </div>
   );
 }
