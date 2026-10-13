@@ -1,35 +1,33 @@
-/* Khung ngoài: luôn cao đúng 1 màn hình, thiết kế 1440x1617 được phóng theo CHIỀU CAO */
+/* Container bao bọc toàn màn hình */
 .wrap {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-londrina: var(--font-londrina-solid), sans-serif;
-
-  /* 1 đơn vị thiết kế = (chiều cao màn hình) / 1617 */
-  --u: calc(100vh / 1617);
+  
+  --u: min(calc(100vw / 1920), calc(100vh / 1287));
 
   position: relative;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
-  overflow: hidden;
-  background: #00AAFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Chặn tuyệt đối thanh scroll */
 }
 
-@supports (height: 100dvh) {
-  .wrap {
-    --u: calc(100dvh / 1617);
-    height: 100dvh;
-  }
+/* Nền đại dương tràn viền */
+.bg {
+  object-fit: cover; /* Giúp ảnh giãn ra lấp đầy cả viền màn hình thừa mà không méo */
+  z-index: 0;
 }
 
-/* Sân khấu thiết kế: rộng 1440u, cao đúng bằng khung, căn giữa ngang */
+/* Khung sân khấu bên trong (Vẫn căn giữa và đúng tỷ lệ) */
 .wrap > .home {
   position: relative;
-  margin: 0 auto; /* cần độ ưu tiên cao hơn reset ".wrap *" bên dưới */
-  width: calc(1440 * var(--u));
-  height: 100%;
-  overflow: hidden;
+  width: calc(1920 * var(--u));
+  height: calc(1287 * var(--u));
+  z-index: 1; /* Nổi lên trên ảnh nền */
 }
 
-/* reset nhỏ, chỉ áp dụng bên trong .wrap */
 .wrap * {
   box-sizing: border-box;
   margin: 0;
@@ -45,56 +43,46 @@
   display: block;
 }
 
-/* ===== Nền ===== */
-.bg {
+/* KHUNG HƯỚNG DẪN (Click the fish you...) */
+.box2 {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: calc(1440 * var(--u));
-  height: calc(1617 * var(--u));
-  object-fit: cover;
-}
-
-/* ===== Bong bóng hướng dẫn ===== */
-.box1 {
-  position: absolute;
-  left: calc(648.75 * var(--u));
-  top: calc(81 * var(--u));
-  width: calc(696.75 * var(--u));
-  height: calc(120 * var(--u));
+  left: calc(865 * var(--u));
+  top: calc(108 * var(--u));
+  width: calc(929 * var(--u));
+  height: calc(160 * var(--u));
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: calc(7.5 * var(--u));
-  padding: calc(22.5 * var(--u));
-  border-radius: calc(375 * var(--u));
-  background: radial-gradient(
-    calc(689.25 * var(--u)) calc(705.75 * var(--u)) at 0.9% 3%,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  border: calc(2.25 * var(--u)) solid rgba(255, 255, 255, 0.9);
-  -webkit-backdrop-filter: blur(calc(15.75 * var(--u)));
-  backdrop-filter: blur(calc(15.75 * var(--u)));
+  gap: calc(10 * var(--u));
+  padding: calc(30 * var(--u));
+  border-radius: calc(500 * var(--u));
+  background: radial-gradient(circle at 0.9% 3%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  border: calc(3 * var(--u)) solid rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(calc(21 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(21 * var(--u)));
+  z-index: 10;
 }
 
-.clickText {
+.clickTheFishYou {
   flex: 1 1 0;
-  min-width: 0;
   font-family: var(--font-bubbles);
-  font-size: calc(30 * var(--u));
+  font-size: calc(40 * var(--u));
   font-weight: 400;
   color: #ffffff;
   text-align: center;
 }
 
-/* ===== Rương kho báu: hover mở nắp ===== */
-.khoBau {
+/* ==================================================== */
+/* CỤM RƯƠNG KHO BÁU VÀ MY RESUME ĐÃ SỬA LẠI TỌA ĐỘ */
+/* ==================================================== */
+.khoBauWrap {
   position: absolute;
-  left: 0;
-  top: calc(1209 * var(--u));
-  width: calc(363.75 * var(--u));
-  height: calc(408 * var(--u));
+  left: calc(3 * var(--u));
+  top: calc(777 * var(--u));
+  width: calc(485 * var(--u));
+  height: calc(544 * var(--u));
+  z-index: 5;
+  cursor: pointer;
   display: block;
 }
 
@@ -102,112 +90,71 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: calc(363.75 * var(--u));
-  height: calc(408 * var(--u));
-  object-fit: cover;
-  transition: opacity 0.25s ease;
-}
-
-.khoImgOpen {
-  opacity: 0;
-}
-
-.khoBau:hover .khoImgClosed,
-.khoBau:focus-visible .khoImgClosed {
-  opacity: 0;
-}
-
-.khoBau:hover .khoImgOpen,
-.khoBau:focus-visible .khoImgOpen {
-  opacity: 1;
-}
-
-.box4 {
-  position: absolute;
-  left: calc(111 * var(--u));
-  top: calc(174 * var(--u));
-  width: calc(141.75 * var(--u));
-  height: calc(141 * var(--u));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: calc(7.5 * var(--u));
-  padding: calc(22.5 * var(--u));
-  border-radius: calc(375 * var(--u));
-  background: radial-gradient(
-    calc(192 * var(--u)) calc(326.25 * var(--u)) at 0.9% 3%,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  border: calc(2.25 * var(--u)) solid rgba(255, 255, 255, 0.9);
-  -webkit-backdrop-filter: blur(calc(15.75 * var(--u)));
-  backdrop-filter: blur(calc(15.75 * var(--u)));
-}
-
-.myResume {
-  flex-shrink: 0;
-  font-family: var(--font-londrina);
-  font-size: calc(30 * var(--u));
-  font-weight: 400;
-  line-height: calc(30 * var(--u));
-  color: #ffffff;
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* ===== Nhãn ===== */
-.aboutMe,
-.cultureArts,
-.educationPsychology,
-.economics,
-.communityService {
-  position: absolute;
-  font-family: var(--font-bubbles);
-  font-size: calc(39 * var(--u));
-  font-weight: 400;
-  color: #ffffff;
-  text-align: center;
-}
-
-.aboutMe             { left: calc(102.75 * var(--u)); top: calc(284.25 * var(--u)); width: calc(225 * var(--u)); }
-.cultureArts         { left: calc(480.75 * var(--u)); top: calc(367.5 * var(--u));  width: calc(372 * var(--u)); }
-.educationPsychology { left: calc(843 * var(--u));    top: calc(670.5 * var(--u));  width: calc(372 * var(--u)); }
-.economics           { left: calc(371.25 * var(--u)); top: calc(999 * var(--u));    width: calc(372 * var(--u)); }
-.communityService    { left: calc(855.75 * var(--u)); top: calc(1366.5 * var(--u)); width: calc(372 * var(--u)); }
-
-/* ===== 5 con cá ===== */
-.fish {
-  position: absolute;
-  display: block;
-  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   transition: opacity 0.3s ease;
 }
 
-.fish img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.khoImgOpen { opacity: 0; }
+.khoBauWrap:hover .khoImgClosed { opacity: 0; }
+.khoBauWrap:hover .khoImgOpen { opacity: 1; }
+
+.box4 {
+  position: absolute;
+  /* Kéo bong bóng chữ xuống ngay giữa rương */
+  left: 50%;
+  top: 55%; 
+  transform: translate(-50%, -50%);
+  width: calc(189 * var(--u));
+  height: calc(188 * var(--u));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 0.9% 3%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+  border: calc(3 * var(--u)) solid rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(calc(21 * var(--u)));
+  z-index: 6;
 }
 
-.ca1 { left: calc(147 * var(--u));    top: calc(86.25 * var(--u));  width: calc(153.75 * var(--u)); height: calc(176.25 * var(--u)); }
-.ca2 { left: calc(549.75 * var(--u)); top: calc(156.75 * var(--u)); width: calc(244.5 * var(--u));  height: calc(195 * var(--u));    }
-.ca3 { left: calc(906 * var(--u));    top: calc(447 * var(--u));    width: calc(261 * var(--u));    height: calc(209.25 * var(--u)); }
-.ca4 { left: calc(360.75 * var(--u)); top: calc(718.5 * var(--u));  width: calc(417 * var(--u));    height: calc(268.5 * var(--u));  }
-.ca5 { left: calc(905.25 * var(--u)); top: calc(936 * var(--u));    width: calc(337.5 * var(--u));  height: calc(477 * var(--u));    }
-
-/* ===== HOVER: cá mờ đi khi rê vào cá hoặc chữ ===== */
-.fishLink {
-  display: contents;
+.myResume {
+  font-family: var(--font-londrina);
+  font-size: calc(40 * var(--u));
+  line-height: calc(40 * var(--u));
+  color: #ffffff;
+  text-align: center;
 }
 
-.fishLink:hover .fish,
-.fishLink:focus-visible .fish {
-  opacity: 0.55;
+/* ==================================================== */
+/* CÁC NHÃN TEXT (Giữ nguyên)   */
+/* ==================================================== */
+.aboutMe { position: absolute; left: calc(80 * var(--u)); top: calc(220 * var(--u)); width: calc(254 * var(--u)); font-family: var(--font-bubbles); font-size: calc(36 * var(--u)); color: #ffffff; text-align: center; pointer-events: none;}
+.cultureArts { position: absolute; left: calc(250 * var(--u)); top: calc(630 * var(--u)); width: calc(366 * var(--u)); font-family: var(--font-bubbles); font-size: calc(36 * var(--u)); color: #ffffff; text-align: center; pointer-events: none;}
+.educationPsychology { position: absolute; left: calc(582 * var(--u)); top: calc(960 * var(--u)); width: calc(376 * var(--u)); font-family: var(--font-bubbles); font-size: calc(36 * var(--u)); color: #ffffff; text-align: center; pointer-events: none;}
+.economics { position: absolute; left: calc(1154 * var(--u)); top: calc(700 * var(--u)); width: calc(339 * var(--u)); font-family: var(--font-bubbles); font-size: calc(36 * var(--u)); color: #ffffff; text-align: center; pointer-events: none;}
+.communityService { position: absolute; left: calc(1700 * var(--u)); top: calc(805 * var(--u)); width: calc(409 * var(--u)); font-family: var(--font-bubbles); font-size: calc(36 * var(--u)); color: #ffffff; text-align: center; pointer-events: none;}
+
+/* ==================================================== */
+/* VỊ TRÍ 5 CON CÁ (Giữ nguyên) */
+/* ==================================================== */
+.fish {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  z-index: 5;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .fish,
-  .khoImg {
-    transition: none;
-  }
-}
+.fish img { width: 100%; height: 100%; object-fit: contain; }
+
+.ca1 { left: calc(100 * var(--u)); top: calc(9 * var(--u)); width: calc(173 * var(--u)); height: calc(199 * var(--u)); }
+.ca2 { left: calc(300 * var(--u)); top: calc(421 * var(--u)); width: calc(240 * var(--u)); height: calc(192 * var(--u)); }
+.ca3 { left: calc(634 * var(--u)); top: calc(737 * var(--u)); width: calc(264 * var(--u)); height: calc(212 * var(--u)); }
+.ca4 { left: calc(1143 * var(--u)); top: calc(428 * var(--u)); width: calc(380 * var(--u)); height: calc(245 * var(--u)); }
+.ca5 { left: calc(1700 * var(--u)); top: calc(327 * var(--u)); width: calc(345 * var(--u)); height: calc(488 * var(--u)); }
+
+.fishLink { display: contents; }
+.fishLink:hover .fish { opacity: 0.7; transform: scale(1.05); }
