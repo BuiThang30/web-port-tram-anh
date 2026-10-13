@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Rubik_Bubbles } from 'next/font/google';
@@ -19,6 +19,11 @@ type Txt = { l: number; t: number; w: number; text: string };
 type Pic = { src: string; l: number; t: number; w: number; h: number };
 type PanelRect = { left: number; top: number; width: number; height: number };
 
+/* Các hàm tiện ích chuyển đổi pixel sang tỷ lệ responsive & gán thứ tự order trên mobile */
+const u = (n: number) => `calc(${n} * var(--u))`;
+const ord = (t: number, isText = false): CSSProperties =>
+  ({ '--o': Math.round(isText ? t - 5 : t) }) as CSSProperties;
+
 const img = (p: string) => `/image/economics/${p}.png`;
 
 /* ====== NỘI DUNG ====== */
@@ -26,7 +31,7 @@ const INTRO = `My friends usually wonder why I chose shark as the mascot for my 
 
 const PROJECT_1 = `I have started my in-depth dive into sociology with my first economically-based initiative as a founder - The Econobuzz. With the mascot of the signature shark wearing multiple costumes, the project has enabled me to collaborate with over 200 students all over the country and worldwide over 2 years, helping me to enhance my leadership and my ability to balance between different opinions.`;
 
-const PROJECT_2 = `In season 1, The Econobuzz organized an online talk show about studying abroad in the field of business, collaborated with Anh Tuyet - the founder of Miyork Education, while in season 2, the project collaborated with specialist Jackie Nhat and 6 other companies to set up an offline workshop about personal financial management.`;
+const PROJECT_2 = `In season 1, The Econobuzz organized an online talk show about studying abroad in the field of business, collaborated with Anh Tuyet - the founder of Miyork Education, while in season 2, the project collaborated with specialist Jackie Nhat and 6 companies to set up an offline workshop about personal financial management.`;
 
 const PROJECT_3 = `Last but not least, we also establish an economic competition that attracts hundreds of contestants and sponsor organizations. Ultimately, I really hope my project can convey meaningful knowledge to the society, and use economics to advocate for the better.`;
 
@@ -72,7 +77,6 @@ const CONTENT: Record<Tab, { texts: Txt[]; pics: Pic[] }> = {
   },
 };
 
-
 type Box = { l: number; t: number; w: number; h: number };
 const trio = (dir: string, name: string) => [1, 2, 3].map((n) => img(`${dir}/${name}-${n}`));
 
@@ -108,7 +112,10 @@ function Slides({ srcs, box, interval = 3500 }: { srcs: string[]; box: Box; inte
   }, [srcs.length, interval]);
 
   return (
-    <div className={styles.slideBox} style={{ left: box.l, top: box.t, width: box.w, height: box.h }}>
+    <div
+      className={styles.slideBox}
+      style={{ left: u(box.l), top: u(box.t), width: u(box.w), height: u(box.h), ...ord(box.t) }}
+    >
       {srcs.map((s, i) => (
         <Image
           key={s}
@@ -129,36 +136,61 @@ export default function EconomicsPage() {
   const C = CONTENT[tab];
 
   return (
-    <main className={`${styles.page} ${rubik.variable} ${nexa.variable}`}>
+    <main
+      className={`${styles.page} ${rubik.variable} ${nexa.variable}`}
+      style={{ height: u(810), '--h': 810 } as CSSProperties}
+    >
       <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
 
-      {PANELS[tab].map((p, i) => (
-        <div key={i} className={`${styles.glass} ${styles.panel}`} style={p} />
-      ))}
-
-      <div key={tab} className={styles.content}>
-        {C.texts.map((t) => (
-          <p key={t.text} className={styles.text} style={{ left: t.l, top: t.t, width: t.w }}>{t.text}</p>
+      <div className={styles.canvas}>
+        {PANELS[tab].map((p, i) => (
+          <div
+            key={i}
+            className={`${styles.glass} ${styles.panel}`}
+            style={{ left: u(p.left), top: u(p.top), width: u(p.width), height: u(p.height) }}
+          />
         ))}
 
-        {C.pics.map((p) => (
-          <div key={p.src} className={styles.pic} style={{ left: p.l, top: p.t, width: p.w, height: p.h }}>
-            <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
-          </div>
-        ))}
+        <div key={tab} className={styles.content}>
+          {C.texts.map((t) => (
+            <p
+              key={t.text}
+              className={styles.text}
+              style={{ left: u(t.l), top: u(t.t), width: u(t.w), ...ord(t.t, true) }}
+            >
+              {t.text}
+            </p>
+          ))}
 
-        {tab === 'intro' && <Slides srcs={SHARKS} box={SHARK_BOX} interval={3500} />}
-        {tab === 'project' && <Slides srcs={TALKSHOWS} box={TALKSHOW_BOX} interval={4000} />}
-        {tab === 'magazine' && <Slides srcs={GAMES} box={GAME_BOX} interval={4500} />}
+          {C.pics.map((p) => (
+            <div
+              key={p.src}
+              className={styles.pic}
+              style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+            >
+              <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
+            </div>
+          ))}
 
-        {tab === 'magazine' && (
-          <a className={`${styles.glass} ${styles.btn}`} href={MAGAZINE_URL} target="_blank" rel="noreferrer">
-            My Magazine
-            <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M1 8h26M20 1l7 7-7 7" />
-            </svg>
-          </a>
-        )}
+          {tab === 'intro' && <Slides srcs={SHARKS} box={SHARK_BOX} interval={3500} />}
+          {tab === 'project' && <Slides srcs={TALKSHOWS} box={TALKSHOW_BOX} interval={4000} />}
+          {tab === 'magazine' && <Slides srcs={GAMES} box={GAME_BOX} interval={4500} />}
+
+          {tab === 'magazine' && (
+            <a
+              className={`${styles.glass} ${styles.btn}`}
+              style={{ left: u(838.5), top: u(280.5), ...ord(280.5) }}
+              href={MAGAZINE_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              My Magazine
+              <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M1 8h26M20 1l7 7-7 7" />
+              </svg>
+            </a>
+          )}
+        </div>
       </div>
 
       <div className={`${styles.glass} ${styles.crumb}`}>
@@ -169,7 +201,9 @@ export default function EconomicsPage() {
 
       <nav className={styles.nav}>
         {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>{n.label}</Link>
+          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>
+            {n.label}
+          </Link>
         ))}
       </nav>
 

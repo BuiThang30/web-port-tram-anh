@@ -19,6 +19,9 @@
 /* Nền: rộng full 1440px, cắt từ TRÊN xuống hết chiều cao trang */
 .bg { object-fit: cover; object-position: top center; }
 
+/* desktop: stage và canvas không tạo khung, mọi thứ định vị theo .page */
+.stage, .canvas { display: contents; }
+
 /* ===== Kính ===== */
 .glass {
   position: relative;
@@ -162,6 +165,7 @@
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
+  pointer-events: auto;
   transition: color 0.2s ease;
 }
 
@@ -308,4 +312,133 @@
   .content, .slide { animation: none; }
   .fadeImg { transition: none; }
   .page, .panel, .pill, .nav a, .sub { transition: none; }
+}
+
+/* =====================================================
+   1024px -> 1439px
+   Cột trái: breadcrumb / menu / nút (thu hẹp, nút tự xuống dòng).
+   Cột phải: NGUYÊN bố cục Figma, phóng theo --s (tính trong page.tsx).
+   --left, --s, --cx, --h được set inline từ TSX.
+   ===================================================== */
+@media (max-width: 1439px) {
+  .page {
+    width: 100%;
+    height: auto !important;       /* ghi đè height inline; chiều cao lấy từ .stage */
+    display: grid;
+    grid-template-columns: var(--left) minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 24px;
+    align-content: start;
+    padding: 0 24px 32px;
+    overflow: hidden;
+  }
+
+  .bg { z-index: 0; }
+
+  .stage {
+    display: block;
+    position: relative;
+    z-index: 2;
+    grid-column: 2;
+    grid-row: 1 / -1;
+    height: calc(var(--h) * var(--s) * 1px);
+    pointer-events: none;
+  }
+
+  .canvas {
+    display: block;
+    position: absolute;
+    left: var(--cx);
+    top: 0;
+    width: 1440px;
+    height: calc(var(--h) * 1px);
+    transform: scale(var(--s));
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+
+  .crumb {
+    position: relative;
+    z-index: 3;
+    grid-column: 1; grid-row: 1;
+    justify-self: start;
+    left: auto; top: auto;
+    margin-top: 32px;
+    height: 28px; padding: 0 14px;
+    font-size: 13px; --r: 14px;
+  }
+
+  .nav {
+    position: relative;
+    z-index: 3;
+    grid-column: 1; grid-row: 2;
+    left: auto; top: auto; width: auto;
+    margin-top: 22px;
+    gap: 14px;
+    font-size: clamp(18px, 1.9vw, 26px);
+    line-height: 1.2;
+  }
+  .nav a { color: rgba(255, 255, 255, 0.5); }
+  .nav a.navActive { color: #fff; }
+
+  .pills {
+    position: relative;
+    z-index: 3;
+    grid-column: 1; grid-row: 3;
+    left: auto; top: auto;
+    margin-top: 34px;
+    gap: 12px;
+  }
+
+  .pill {
+    height: auto;
+    min-height: 40px;
+    padding: 8px 18px;
+    font-size: clamp(14px, 1.4vw, 18px);
+    line-height: 1.25;
+    white-space: normal;       /* nút dài tự xuống dòng */
+    text-align: left;
+    --r: 22px;
+  }
+}
+
+/* =====================================================
+   < 1024px: 1 cột. Header xếp trên, nội dung phóng vừa chiều ngang.
+   ===================================================== */
+@media (max-width: 1023px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    column-gap: 0;
+    row-gap: 14px;
+    padding: 0 16px 24px;
+  }
+
+  .crumb { grid-column: 1; grid-row: 1; margin-top: 16px; }
+
+  .nav {
+    grid-column: 1; grid-row: 2;
+    margin-top: 0;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 8px 20px;
+    font-size: 18px;
+  }
+  .nav a { color: rgba(255, 255, 255, 0.7); }
+  .nav a.navActive { color: #fff; }
+
+  .pills {
+    grid-column: 1; grid-row: 3;
+    margin-top: 0;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pill { font-size: 15px; padding: 7px 16px; }
+
+  .stage { grid-column: 1; grid-row: 4; }
+}
+
+@media (max-width: 479px) {
+  .nav { font-size: 16px; gap: 6px 16px; }
+  .pill { font-size: 14px; padding: 6px 14px; }
 }

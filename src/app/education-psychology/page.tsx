@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Rubik_Bubbles } from 'next/font/google';
@@ -20,6 +20,11 @@ type Pic = { src: string; l: number; t: number; w: number; h: number };
 type Ring = { src: string; l: number; t: number; d: number };
 type Content = { texts: Txt[]; pics: Pic[]; rings: Ring[] };
 type PanelRect = { left: number; top: number; width: number; height: number };
+
+/* Các hàm tiện ích chuyển đổi pixel sang tỷ lệ responsive & gán thứ tự order trên mobile */
+const u = (n: number) => `calc(${n} * var(--u))`;
+const ord = (t: number, isText = false): CSSProperties =>
+  ({ '--o': Math.round(isText ? t - 5 : t) }) as CSSProperties;
 
 const img = (p: string) => `/image/education/${p}.png`;
 
@@ -109,7 +114,7 @@ const NAV = [
   { href: '/community-service', label: 'Community Service' },
 ];
 
-const PAX_IMGS = Array.from({ length: 5 }, (_, i) => img(`pax/pax-${i + 1}`)); // 5 ảnh
+const PAX_IMGS = Array.from({ length: 5 }, (_, i) => img(`pax/pax-${i + 1}`));
 
 /* ====== Dải ảnh tự chạy ngang (kéo chuột / cuộn để xem, rê chuột vào thì dừng) ====== */
 function Strip({ srcs }: { srcs: string[] }) {
@@ -140,6 +145,7 @@ function Strip({ srcs }: { srcs: string[] }) {
     <div
       ref={ref}
       className={styles.strip}
+      style={{ left: u(683.25), top: u(259.5), width: u(689.25), height: u(267), ...ord(259.5) }}
       onMouseEnter={() => (paused.current = true)}
       onMouseLeave={() => { paused.current = false; drag.current = null; }}
       onPointerDown={(e) => { drag.current = { x: e.clientX, s: ref.current?.scrollLeft ?? 0 }; }}
@@ -159,44 +165,71 @@ export default function EducationPsychologyPage() {
   const [tab, setTab] = useState<Tab>('intro');
   const toggleTab = (id: Tab) => setTab((cur) => (cur === id ? 'intro' : id));
   const C = CONTENT[tab];
+  const P = PANEL[tab];
 
   return (
-    <main className={`${styles.page} ${rubik.variable} ${nexa.variable}`}>
+    <main 
+      className={`${styles.page} ${rubik.variable} ${nexa.variable}`}
+      style={{ height: u(810), '--h': 810 } as CSSProperties}
+    >
       <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
 
-      <div className={`${styles.glass} ${styles.panel}`} style={PANEL[tab]} />
+      <div className={styles.canvas}>
+        <div 
+          className={`${styles.glass} ${styles.panel}`} 
+          style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }} 
+        />
 
-      <div key={tab} className={styles.content}>
-        {C.texts.map((t) => (
-          <p key={t.text} className={`${styles.text} ${t.sm ? styles.textSm : ''}`} style={{ left: t.l, top: t.t, width: t.w }}>
-            {t.text}
-          </p>
-        ))}
+        <div key={tab} className={styles.content}>
+          {C.texts.map((t) => (
+            <p 
+              key={t.text} 
+              className={`${styles.text} ${t.sm ? styles.textSm : ''}`} 
+              style={{ left: u(t.l), top: u(t.t), width: u(t.w), ...ord(t.t, true) }}
+            >
+              {t.text}
+            </p>
+          ))}
 
-        {C.pics.map((p) => (
-          <div key={p.src} className={styles.pic} style={{ left: p.l, top: p.t, width: p.w, height: p.h }}>
-            <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
-          </div>
-        ))}
-
-        {C.rings.map((r) => (
-          <div key={r.src} className={`${styles.glass} ${styles.ring}`} style={{ left: r.l, top: r.t, width: r.d, height: r.d }}>
-            <div className={styles.ringInner}>
-              <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
+          {C.pics.map((p) => (
+            <div 
+              key={p.src} 
+              className={styles.pic} 
+              style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+            >
+              <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
             </div>
-          </div>
-        ))}
+          ))}
 
-        {tab === 'vocarbit' && (
-          <a className={`${styles.glass} ${styles.btn}`} href={WEBSITE_URL} target="_blank" rel="noreferrer">
-            My Website
-            <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M1 8h26M20 1l7 7-7 7" />
-            </svg>
-          </a>
-        )}
+          {C.rings.map((r) => (
+            <div 
+              key={r.src} 
+              className={`${styles.glass} ${styles.ring}`} 
+              style={{ left: u(r.l), top: u(r.t), width: u(r.d), height: u(r.d), ...ord(r.t) }}
+            >
+              <div className={styles.ringInner}>
+                <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
+              </div>
+            </div>
+          ))}
 
-        {tab === 'pax' && <Strip srcs={PAX_IMGS} />}
+          {tab === 'vocarbit' && (
+            <a 
+              className={`${styles.glass} ${styles.btn}`} 
+              style={{ left: u(947.25), top: u(542.25), ...ord(542.25) }}
+              href={WEBSITE_URL} 
+              target="_blank" 
+              rel="noreferrer"
+            >
+              My Website
+              <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M1 8h26M20 1l7 7-7 7" />
+              </svg>
+            </a>
+          )}
+
+          {tab === 'pax' && <Strip srcs={PAX_IMGS} />}
+        </div>
       </div>
 
       <div className={`${styles.glass} ${styles.crumb}`}>
@@ -207,7 +240,9 @@ export default function EducationPsychologyPage() {
 
       <nav className={styles.nav}>
         {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>{n.label}</Link>
+          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>
+            {n.label}
+          </Link>
         ))}
       </nav>
 

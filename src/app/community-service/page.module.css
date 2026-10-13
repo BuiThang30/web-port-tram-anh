@@ -1,8 +1,9 @@
-/* Figma 1920px -> code 1440px (mọi số px đã nhân 0.75). Chiều cao trang đổi theo tab (inline style). */
+/* Figma 1920px -> code 1440px. Chiều cao trang đổi theo tab (inline style). */
 
 .page {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-content: var(--font-nexa), sans-serif;
+  --u: 1px;
 
   position: relative;
   margin: 0 auto;
@@ -16,8 +17,10 @@
 
 .page * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Nền: rộng full 1440px, cắt từ TRÊN xuống hết chiều cao trang */
 .bg { object-fit: cover; object-position: top center; }
+
+/* desktop: canvas không tạo khung, mọi thứ định vị theo .page */
+.canvas { display: contents; }
 
 /* ===== Kính ===== */
 .glass {
@@ -44,7 +47,7 @@
 
 .panel {
   position: absolute;
-  --r: 15px;
+  --r: calc(15 * var(--u));
   transition: left 0.35s ease, top 0.35s ease, width 0.35s ease, height 0.35s ease;
 }
 
@@ -60,27 +63,28 @@
 
 .text {
   position: absolute;
-  font-size: 15px;          /* 20px */
+  font-size: calc(15 * var(--u));
   font-weight: 400;
-  line-height: 18.75px;     /* 25px */
+  line-height: calc(18.75 * var(--u));
 }
 
-.pic { position: absolute; border-radius: 12px; overflow: hidden; }
-/* ảnh xuất sẵn hình tự do (collage): không bo, không cắt */
+.group { display: contents; }
+
+.pic { position: absolute; border-radius: calc(12 * var(--u)); overflow: hidden; }
 .free { border-radius: 0; overflow: visible; }
 .cover { object-fit: cover; }
 .contain { object-fit: contain; }
 
-.ring { position: absolute; padding: 7.5px; border-radius: 50%; }
+.ring { position: absolute; padding: calc(7.5 * var(--u)); border-radius: 50%; }
 .ringInner { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
 
 .recapTitle {
   position: absolute;
-  left: 493.5px;
-  top: 679.5px;
-  width: 888px;
+  left: calc(493.5 * var(--u));
+  top: calc(679.5 * var(--u));
+  width: calc(888 * var(--u));
   text-align: center;
-  font-size: 19.5px;
+  font-size: calc(19.5 * var(--u));
   font-weight: 400;
 }
 
@@ -149,7 +153,6 @@
   transition: background 0.2s ease, color 0.2s ease;
 }
 
-/* nút 2 dòng (xuống dòng theo \n trong label) */
 .pillWrap {
   height: auto;
   padding: 9px 22.5px;
@@ -169,4 +172,221 @@
 @media (prefers-reduced-motion: reduce) {
   .content { animation: none; }
   .page, .panel, .pill, .nav a { transition: none; }
+}
+
+/* =====================================================
+   1024px -> 1439px
+   Cột trái (breadcrumb / menu / nút) thu hẹp, cột phải giữ NGUYÊN bố cục
+   Figma và phóng vừa chiều rộng còn lại => ảnh to, đúng vị trí thiết kế.
+   ===================================================== */
+@media (max-width: 1439px) {
+  .page {
+    --left: clamp(250px, 24vw, 340px);
+    --pad: 24px;
+    /* 1 đơn vị thiết kế = (chiều rộng cột phải) / 888 */
+    --u: calc((100vw - var(--left) - 2 * var(--pad)) / 888);
+
+    width: 100%;
+    height: auto !important;   /* ghi đè height inline; dùng min-height bên dưới */
+    min-height: calc((var(--h) - 33) * var(--u) + 2 * var(--pad));
+    display: grid;
+    grid-template-columns: var(--left) minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    align-content: start;
+    padding: var(--pad);
+  }
+
+  .bg { z-index: 0; }
+
+  /* canvas đặt sao cho panel (x=493.5, y=33) nằm đúng đầu cột phải */
+  .canvas {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: calc(var(--pad) + var(--left) - 493.5 * var(--u));
+    top: calc(var(--pad) - 33 * var(--u));
+    width: calc(1440 * var(--u));
+    height: calc(var(--h) * var(--u));
+    pointer-events: none;
+  }
+
+  .crumb {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 1;
+    justify-self: start;
+    left: auto; top: auto;
+    height: 28px; padding: 0 14px;
+    font-size: 13px; --r: 14px;
+  }
+
+  .nav {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 2;
+    left: auto; top: auto; width: auto;
+    margin-top: 22px;
+    gap: 14px;
+    font-size: clamp(18px, 1.9vw, 26px);
+    line-height: 1.2;
+  }
+  .nav a { color: rgba(255, 255, 255, 0.45); }
+  .nav a.navActive { color: #fff; }
+
+  .pills {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 3;
+    left: auto; top: auto;
+    margin-top: 36px;
+    gap: 12px;
+  }
+  .pill { height: 42px; padding: 0 18px; font-size: clamp(14px, 1.45vw, 18px); }
+  .pillWrap { height: auto; padding: 9px 18px; line-height: 1.3; }
+}
+
+/* =====================================================
+   < 1024px: 1 cột. Thứ tự chữ / ảnh vẫn theo thiết kế
+   (sắp theo toạ độ top qua biến --o).
+   ===================================================== */
+@media (max-width: 1023px) {
+  .page {
+    --u: 1px;
+    max-width: 760px;
+    min-height: 100dvh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    row-gap: 16px;
+    padding: 20px;
+  }
+
+  .canvas { display: contents; }
+  .panel { display: none; }
+
+  .crumb { grid-column: 1; grid-row: 1; }
+
+  .nav {
+    grid-column: 1; grid-row: 2;
+    margin-top: 0;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 8px 20px; font-size: 19px;
+  }
+  .nav a { color: rgba(255, 255, 255, 0.7); }
+  .nav a.navActive { color: #fff; }
+
+  .pills {
+    grid-column: 1; grid-row: 3;
+    margin-top: 0;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pill { height: 40px; font-size: 16px; }
+
+  /* thẻ nội dung: các phần tử xếp theo --o */
+  .content {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 4;
+    inset: auto;
+    pointer-events: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .group { display: contents; }
+
+  .text,
+  .recapTitle,
+  .pic,
+  .ring {
+    order: var(--o, 0);
+  }
+
+  .text {
+    position: static !important;
+    left: auto !important; top: auto !important;
+    width: 100% !important;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 4px 0;
+  }
+
+  .recapTitle {
+    position: static !important;
+    width: 100% !important;
+    font-size: 19px;
+    margin: 8px 0 0;
+  }
+
+  /* ảnh chữ nhật: 2 ảnh mỗi hàng */
+  .pic {
+    position: relative !important;
+    left: auto !important; top: auto !important;
+    width: calc(50% - 6px) !important;
+    height: 260px !important;
+    border-radius: 12px;
+  }
+
+  /* ảnh đứng một mình (cover Voice): full hàng, giữ tỉ lệ */
+  .group:not(.recap) > .pic:only-child {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 417 / 350;
+  }
+
+  /* collage xuất sẵn (Intro): full hàng, giữ tỉ lệ gốc */
+  .group > .free {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 816 / 580;
+    border-radius: 0;
+  }
+
+  /* ảnh tròn: căn giữa */
+  .ring {
+    position: relative !important;
+    left: auto !important; top: auto !important;
+    width: 200px !important; height: 200px !important;
+    flex: 0 0 200px;
+    margin: 0 auto;
+    padding: 7px;
+  }
+
+  /* recap: ảnh đầu full hàng */
+  .recap .pic { height: 180px !important; }
+  .recap .pic:nth-child(1) { width: 100% !important; height: 240px !important; }
+}
+
+@media (max-width: 767px) {
+  .page { row-gap: 14px; padding: 16px; }
+  .nav { font-size: 17px; gap: 6px 16px; }
+  .pill { height: 38px; padding: 0 14px; font-size: 15px; }
+  .pillWrap { padding: 8px 14px; }
+
+  .content { padding: 16px; gap: 10px; }
+  .text { font-size: 14px; line-height: 1.55; }
+  .pic { height: 210px !important; width: calc(50% - 5px) !important; }
+  .ring { width: 180px !important; height: 180px !important; flex-basis: 180px; }
+  .recap .pic { height: 140px !important; }
+  .recap .pic:nth-child(1) { height: 190px !important; }
+}
+
+@media (max-width: 479px) {
+  .page { row-gap: 12px; padding: 12px; }
+  .crumb { font-size: 12px; height: 26px; padding: 0 10px; }
+  .nav { flex-direction: column; gap: 6px; font-size: 15px; }
+  .pills { gap: 8px; }
+  .pill { height: 36px; padding: 0 12px; font-size: 14px; }
+  .pillWrap { padding: 7px 12px; }
+
+  .content { padding: 14px; gap: 8px; border-radius: 14px; }
+  .text { font-size: 13px; line-height: 1.55; }
+  .pic { height: 170px !important; width: calc(50% - 4px) !important; }
+  .ring { width: min(70vw, 220px) !important; height: min(70vw, 220px) !important; flex-basis: min(70vw, 220px); }
+  .recap .pic { height: 110px !important; }
+  .recap .pic:nth-child(1) { height: 160px !important; }
 }

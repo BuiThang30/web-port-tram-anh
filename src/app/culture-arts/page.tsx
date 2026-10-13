@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Rubik_Bubbles } from 'next/font/google';
@@ -265,9 +265,40 @@ function Viewer({ sub, top, arrowTop, onHeight }: { sub: Sub; top: number; arrow
   );
 }
 
+/* ====== Tính tỉ lệ phóng cho màn < 1440 ======
+   Khối nội dung (toạ độ Figma, từ x = 657.75 đến 1420, tức collage Intro) được
+   phóng để LẤP ĐẦY chiều rộng cột phải: không chặn trần, không căn giữa,
+   nên không còn khoảng trống ở giữa màn hình.
+   Phải khớp với padding / --left / column-gap trong CSS. */
+const DESIGN_X0 = 657.75;          // x bên trái nhất của nội dung (collage Intro)
+const DESIGN_W = 1420 - DESIGN_X0; // bề rộng thiết kế = 762.25
+
+function useFit() {
+  const [fit, setFit] = useState({ s: 1, cx: -DESIGN_X0, left: 300 });
+
+  useEffect(() => {
+    const calc = () => {
+      const w = document.documentElement.clientWidth;
+      const wide = w >= 1024;
+      const pad = wide ? 24 : 16;
+      const left = Math.min(400, Math.max(250, w * 0.26));
+      const colW = wide ? w - pad * 2 - left - 24 : w - pad * 2;
+      const s = colW / DESIGN_W;    // lấp đầy cột phải
+      const cx = -DESIGN_X0 * s;    // neo sát đầu cột phải
+      setFit({ s, cx, left });
+    };
+    calc();
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  return fit;
+}
+
 export default function CultureArtsPage() {
   const [tab, setTab] = useState<Tab>('intro');
   const [subKey, setSubKey] = useState<string | null>(null);
+  const fit = useFit();
 
   const toggleTab = (id: Tab) => { setTab((cur) => (cur === id ? 'intro' : id)); setSubKey(null); };
   const toggleSub = (k: string) => setSubKey((cur) => (cur === k ? null : k));
@@ -317,77 +348,90 @@ export default function CultureArtsPage() {
   const pageH = Math.max(HEIGHT[tab], panel.top + panel.height + 27);
   const arrowTop = panel.top + panel.height / 2 - 11;
 
+  const vars = {
+    height: pageH,
+    '--h': pageH,
+    '--s': fit.s,
+    '--cx': `${fit.cx}px`,
+    '--left': `${fit.left}px`,
+  } as CSSProperties;
+
   return (
-    <main className={`${styles.page} ${rubik.variable} ${nexa.variable}`} style={{ height: pageH }}>
+    <main className={`${styles.page} ${rubik.variable} ${nexa.variable}`} style={vars}>
       <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
 
-      <div className={`${styles.glass} ${styles.panel} ${sub ? styles.dark : ''}`} style={panel} />
+      {/* stage + canvas: desktop không tạo khung; < 1440 thì canvas được phóng theo --s */}
+      <div className={styles.stage}>
+        <div className={styles.canvas}>
+          <div className={`${styles.glass} ${styles.panel} ${sub ? styles.dark : ''}`} style={panel} />
 
-      <div key={tab + (sub?.key ?? '')} ref={contentRef} className={styles.content}>
-        {C?.texts.map((t) => {
-          const style = { left: t.l, top: t.t, width: t.w };
-          const cls = `${styles.text} ${t.center ? styles.center : ''}`;
-          return t.href ? (
-            <a key={t.text} className={`${cls} ${styles.caption}`} style={style} href={t.href} target="_blank" rel="noreferrer">{t.text}</a>
-          ) : (
-            <p key={t.text} className={cls} style={style}>{t.text}</p>
-          );
-        })}
+          <div key={tab + (sub?.key ?? '')} ref={contentRef} className={styles.content}>
+            {C?.texts.map((t) => {
+              const style = { left: t.l, top: t.t, width: t.w };
+              const cls = `${styles.text} ${t.center ? styles.center : ''}`;
+              return t.href ? (
+                <a key={t.text} className={`${cls} ${styles.caption}`} style={style} href={t.href} target="_blank" rel="noreferrer">{t.text}</a>
+              ) : (
+                <p key={t.text} className={cls} style={style}>{t.text}</p>
+              );
+            })}
 
-        {C?.pics.map((p) => (
-          <div key={p.src} className={`${styles.pic} ${p.round ? styles.round : ''}`} style={{ left: p.l, top: p.t, width: p.w, height: p.h, zIndex: p.z ?? 1 }}>
-            <Image className={p.round ? styles.cover : styles.contain} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
-          </div>
-        ))}
+            {C?.pics.map((p) => (
+              <div key={p.src} className={`${styles.pic} ${p.round ? styles.round : ''}`} style={{ left: p.l, top: p.t, width: p.w, height: p.h, zIndex: p.z ?? 1 }}>
+                <Image className={p.round ? styles.cover : styles.contain} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
+              </div>
+            ))}
 
-        {C?.rings.map((r) => (
-          <div key={r.src} className={`${styles.glass} ${styles.ring}`} style={{ left: r.l, top: r.t, width: r.d, height: r.d, zIndex: r.z ?? 2 }}>
-            <div className={styles.ringInner}>
-              <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
-            </div>
-          </div>
-        ))}
-
-        {tab === 'essay' && <Strip srcs={ESSAY_IMGS} />}
-
-        {tab === 'concert' && <Slides srcs={CONCERT_SLIDES} box={CONCERT_BOX} interval={CONCERT_INTERVAL} />}
-
-        {tab === 'incense' && (
-          <>
-            <iframe
-              className={styles.video}
-              src="https://www.youtube.com/embed/MFxD5XiWAeY"
-              title="Quang Phu Cau - the story of a traditional incense village"
-              loading="lazy"
-              allowFullScreen
-            />
-            <h3 className={styles.recapTitle}>My Recap Collection</h3>
-            <div className={styles.recap}>
-              {RECAP_IMGS.map((s) => (
-                <div key={s} className={styles.recapItem}>
-                  <Image className={styles.cover} src={s} alt="" fill sizes="320px" />
+            {C?.rings.map((r) => (
+              <div key={r.src} className={`${styles.glass} ${styles.ring}`} style={{ left: r.l, top: r.t, width: r.d, height: r.d, zIndex: r.z ?? 2 }}>
+                <div className={styles.ringInner}>
+                  <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
                 </div>
-              ))}
-            </div>
-          </>
-        )}
+              </div>
+            ))}
 
-        {sub && <Viewer key={sub.key} sub={sub} top={slideTop} arrowTop={arrowTop} onHeight={setSlideH} />}
+            {tab === 'essay' && <Strip srcs={ESSAY_IMGS} />}
+
+            {tab === 'concert' && <Slides srcs={CONCERT_SLIDES} box={CONCERT_BOX} interval={CONCERT_INTERVAL} />}
+
+            {tab === 'incense' && (
+              <>
+                <iframe
+                  className={styles.video}
+                  src="https://www.youtube.com/embed/MFxD5XiWAeY"
+                  title="Quang Phu Cau - the story of a traditional incense village"
+                  loading="lazy"
+                  allowFullScreen
+                />
+                <h3 className={styles.recapTitle}>My Recap Collection</h3>
+                <div className={styles.recap}>
+                  {RECAP_IMGS.map((s) => (
+                    <div key={s} className={styles.recapItem}>
+                      <Image className={styles.cover} src={s} alt="" fill sizes="320px" />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {sub && <Viewer key={sub.key} sub={sub} top={slideTop} arrowTop={arrowTop} onHeight={setSlideH} />}
+          </div>
+
+          {/* Menu con của Patheon (nằm trong canvas để phóng cùng nội dung) */}
+          {tab === 'pantheon' &&
+            SUBS.map((s) => (
+              <button
+                key={s.key}
+                type="button"
+                className={`${styles.sub} ${subKey === s.key ? styles.subOn : ''}`}
+                style={{ left: s.left, top: s.top }}
+                onClick={() => toggleSub(s.key)}
+              >
+                {s.label}
+              </button>
+            ))}
+        </div>
       </div>
-
-      {/* Menu con của Patheon */}
-      {tab === 'pantheon' &&
-        SUBS.map((s) => (
-          <button
-            key={s.key}
-            type="button"
-            className={`${styles.sub} ${subKey === s.key ? styles.subOn : ''}`}
-            style={{ left: s.left, top: s.top }}
-            onClick={() => toggleSub(s.key)}
-          >
-            {s.label}
-          </button>
-        ))}
 
       <div className={`${styles.glass} ${styles.crumb}`}>
         <Link href="/">Homepage</Link>

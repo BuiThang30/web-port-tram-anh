@@ -17,6 +17,9 @@ const nexa = localFont({
 
 type Tab = 'intro' | 'wanderer' | 'food' | 'spiritual';
 
+/* đổi số thiết kế (px trên khung 1440) thành giá trị co giãn theo màn hình */
+const u = (n: number) => `calc(${n} * var(--u))`;
+
 /* ====== NỘI DUNG ====== */
 const INTRO_TITLE =
   '“Mom, I think I can never find a word that can describe myself accurately”';
@@ -167,19 +170,28 @@ export default function AboutPage() {
   // bấm lại nút đang chọn -> quay về màn giới thiệu
   const toggle = (id: Tab) => setTab((cur) => (cur === id ? 'intro' : id));
 
+  const p = PANEL[tab];
+
   return (
     <main className={`${styles.about} ${rubik.variable} ${nexa.variable}`}>
       <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
 
       {/* Khung kính bên phải */}
-      <div className={`${styles.glass} ${styles.panel}`} style={PANEL[tab]} />
+      <div
+        className={`${styles.glass} ${styles.panel}`}
+        style={{ left: u(p.left), top: u(p.top), width: u(p.width), height: u(p.height) }}
+      />
 
       {/* Nội dung đổi theo tab (key để chạy lại hiệu ứng fade) */}
       <div key={tab} className={styles.content}>
         {tab === 'intro' && <h1 className={styles.title}>{INTRO_TITLE}</h1>}
 
         {TEXTS[tab].map((t) => (
-          <p key={t.left + '-' + t.top} className={styles.text} style={{ left: t.left, top: t.top, width: t.width }}>
+          <p
+            key={t.left + '-' + t.top}
+            className={styles.text}
+            style={{ left: u(t.left), top: u(t.top), width: u(t.width) }}
+          >
             {t.text}
           </p>
         ))}
@@ -188,7 +200,7 @@ export default function AboutPage() {
           <div
             key={c.srcs[0]}
             className={`${styles.glass} ${styles.ring}`}
-            style={{ left: c.left, top: c.top, width: c.d, height: c.d }}
+            style={{ left: u(c.left), top: u(c.top), width: u(c.d), height: u(c.d) }}
           >
             <div className={styles.ringInner}>
               <Slides srcs={c.srcs} d={c.d} interval={c.interval} />
@@ -206,13 +218,17 @@ export default function AboutPage() {
               width={Math.round(f.w * 2)}
               height={Math.round(f.h * 2)}
               sizes={`${Math.round(f.w)}px`}
-              style={{ left: f.left, top: f.top, width: f.w, height: f.h }}
+              style={{ left: u(f.left), top: u(f.top), width: u(f.w), height: u(f.h) }}
             />
           ))}
 
         {tab === 'spiritual' &&
           RECTS.map((r) => (
-            <div key={r.src} className={styles.rect} style={{ left: r.left, top: r.top, width: r.w, height: r.h }}>
+            <div
+              key={r.src}
+              className={styles.rect}
+              style={{ left: u(r.left), top: u(r.top), width: u(r.w), height: u(r.h) }}
+            >
               <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.w)}px`} />
             </div>
           ))}
@@ -239,15 +255,15 @@ export default function AboutPage() {
 
       {/* 3 nút chuyển nội dung */}
       <div className={styles.pills}>
-        {PILLS.map((p) => (
+        {PILLS.map((pl) => (
           <button
-            key={p.id}
+            key={pl.id}
             type="button"
-            aria-pressed={tab === p.id}
-            className={`${styles.glass} ${styles.pill} ${tab === p.id ? styles.pillActive : ''}`}
-            onClick={() => toggle(p.id)}
+            aria-pressed={tab === pl.id}
+            className={`${styles.glass} ${styles.pill} ${tab === pl.id ? styles.pillActive : ''}`}
+            onClick={() => toggle(pl.id)}
           >
-            {p.label}
+            {pl.label}
           </button>
         ))}
       </div>

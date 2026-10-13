@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Rubik_Bubbles } from 'next/font/google';
@@ -20,6 +20,13 @@ type Pic = { src: string; l: number; t: number; w: number; h: number; free?: boo
 type Ring = { src: string; l: number; t: number; d: number };
 type Content = { texts: Txt[]; pics: Pic[]; rings: Ring[] };
 type PanelRect = { left: number; top: number; width: number; height: number };
+
+/* đổi số thiết kế (px trên khung 1440) thành giá trị co giãn theo màn hình */
+const u = (n: number) => `calc(${n} * var(--u))`;
+
+/* --o: thứ tự hiển thị trên mobile, lấy theo toạ độ top của thiết kế */
+const ord = (t: number, isText = false): CSSProperties =>
+  ({ '--o': Math.round(isText ? t - 5 : t) }) as CSSProperties;
 
 const img = (p: string) => `/image/community/${p}.png`;
 
@@ -114,42 +121,80 @@ export default function CommunityServicePage() {
   const [tab, setTab] = useState<Tab>('intro');
   const toggleTab = (id: Tab) => setTab((cur) => (cur === id ? 'intro' : id));
   const C = CONTENT[tab];
+  const P = PANEL[tab];
 
   return (
-    <main className={`${styles.page} ${rubik.variable} ${nexa.variable}`} style={{ height: HEIGHT[tab] }}>
+    <main
+      className={`${styles.page} ${rubik.variable} ${nexa.variable}`}
+      style={{ height: u(HEIGHT[tab]), '--h': HEIGHT[tab] } as CSSProperties}
+    >
       <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
 
-      <div className={`${styles.glass} ${styles.panel}`} style={PANEL[tab]} />
+      {/* canvas: toàn bộ khung kính + nội dung, giữ nguyên toạ độ Figma */}
+      <div className={styles.canvas}>
+        <div
+          className={`${styles.glass} ${styles.panel}`}
+          style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }}
+        />
 
-      <div key={tab} className={styles.content}>
-        {C.texts.map((t) => (
-          <p key={t.text} className={styles.text} style={{ left: t.l, top: t.t, width: t.w }}>{t.text}</p>
-        ))}
+        <div key={tab} className={styles.content}>
+          {C.texts.map((t) => (
+            <p
+              key={t.text}
+              className={styles.text}
+              style={{ left: u(t.l), top: u(t.t), width: u(t.w), ...ord(t.t, true) }}
+            >
+              {t.text}
+            </p>
+          ))}
 
-        {C.pics.map((p) => (
-          <div key={p.src} className={`${styles.pic} ${p.free ? styles.free : ''}`} style={{ left: p.l, top: p.t, width: p.w, height: p.h }}>
-            <Image className={p.free ? styles.contain : styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
-          </div>
-        ))}
-
-        {C.rings.map((r) => (
-          <div key={r.src} className={`${styles.glass} ${styles.ring}`} style={{ left: r.l, top: r.t, width: r.d, height: r.d }}>
-            <div className={styles.ringInner}>
-              <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
-            </div>
-          </div>
-        ))}
-
-        {tab === 'voice' && (
-          <>
-            <h3 className={styles.recapTitle}>My Recap Collection</h3>
-            {RECAP.map((p) => (
-              <div key={p.src} className={styles.pic} style={{ left: p.l, top: p.t, width: p.w, height: p.h }}>
-                <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
+          <div className={styles.group}>
+            {C.pics.map((p) => (
+              <div
+                key={p.src}
+                className={`${styles.pic} ${p.free ? styles.free : ''}`}
+                style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+              >
+                <Image
+                  className={p.free ? styles.contain : styles.cover}
+                  src={p.src}
+                  alt=""
+                  fill
+                  sizes={`${Math.round(p.w)}px`}
+                />
               </div>
             ))}
-          </>
-        )}
+
+            {C.rings.map((r) => (
+              <div
+                key={r.src}
+                className={`${styles.glass} ${styles.ring}`}
+                style={{ left: u(r.l), top: u(r.t), width: u(r.d), height: u(r.d), ...ord(r.t) }}
+              >
+                <div className={styles.ringInner}>
+                  <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {tab === 'voice' && (
+            <>
+              <h3 className={styles.recapTitle} style={ord(679.5)}>My Recap Collection</h3>
+              <div className={`${styles.group} ${styles.recap}`}>
+                {RECAP.map((p) => (
+                  <div
+                    key={p.src}
+                    className={styles.pic}
+                    style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+                  >
+                    <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className={`${styles.glass} ${styles.crumb}`}>
@@ -160,7 +205,9 @@ export default function CommunityServicePage() {
 
       <nav className={styles.nav}>
         {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>{n.label}</Link>
+          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>
+            {n.label}
+          </Link>
         ))}
       </nav>
 

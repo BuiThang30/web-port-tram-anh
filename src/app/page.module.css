@@ -1,65 +1,88 @@
-.home {
+/* Khung ngoài: luôn cao đúng 1 màn hình, thiết kế 1440x1617 được phóng theo CHIỀU CAO */
+.wrap {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-londrina: var(--font-londrina-solid), sans-serif;
 
+  /* 1 đơn vị thiết kế = (chiều cao màn hình) / 1617 */
+  --u: calc(100vh / 1617);
+
   position: relative;
-  margin: 0 auto;
-  width: 1440px;
-  height: 1617px;
+  width: 100%;
+  height: 100vh;
   overflow: hidden;
-  background-color: #ffffff;
+  background: #00AAFF;
 }
 
-/* reset nhỏ, chỉ áp dụng bên trong .home */
-.home * {
+@supports (height: 100dvh) {
+  .wrap {
+    --u: calc(100dvh / 1617);
+    height: 100dvh;
+  }
+}
+
+/* Sân khấu thiết kế: rộng 1440u, cao đúng bằng khung, căn giữa ngang */
+.wrap > .home {
+  position: relative;
+  margin: 0 auto; /* cần độ ưu tiên cao hơn reset ".wrap *" bên dưới */
+  width: calc(1440 * var(--u));
+  height: 100%;
+  overflow: hidden;
+}
+
+/* reset nhỏ, chỉ áp dụng bên trong .wrap */
+.wrap * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-.home a {
+.wrap a {
   color: inherit;
   text-decoration: none;
 }
 
-.home img {
+.wrap img {
   display: block;
 }
 
-/* ===== Nền 1920x2156 -> 1440x1617 ===== */
+/* ===== Nền ===== */
 .bg {
   position: absolute;
   left: 0;
   top: 0;
-  width: 1440px;
-  height: 1617px;
+  width: calc(1440 * var(--u));
+  height: calc(1617 * var(--u));
   object-fit: cover;
 }
 
-/* ===== Bong bóng hướng dẫn (chữ 40px -> 30px) ===== */
+/* ===== Bong bóng hướng dẫn ===== */
 .box1 {
   position: absolute;
-  left: 648.75px;
-  top: 81px;
-  width: 696.75px;
-  height: 120px;
+  left: calc(648.75 * var(--u));
+  top: calc(81 * var(--u));
+  width: calc(696.75 * var(--u));
+  height: calc(120 * var(--u));
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 7.5px;
-  padding: 22.5px;
-  border-radius: 375px;
-  background: radial-gradient(689.25px 705.75px at 0.9% 3%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
-  border: 2.25px solid rgba(255, 255, 255, 0.9);
-  -webkit-backdrop-filter: blur(15.75px);
-  backdrop-filter: blur(15.75px);
+  gap: calc(7.5 * var(--u));
+  padding: calc(22.5 * var(--u));
+  border-radius: calc(375 * var(--u));
+  background: radial-gradient(
+    calc(689.25 * var(--u)) calc(705.75 * var(--u)) at 0.9% 3%,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border: calc(2.25 * var(--u)) solid rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(calc(15.75 * var(--u)));
+  backdrop-filter: blur(calc(15.75 * var(--u)));
 }
 
 .clickText {
   flex: 1 1 0;
   min-width: 0;
   font-family: var(--font-bubbles);
-  font-size: 30px;
+  font-size: calc(30 * var(--u));
   font-weight: 400;
   color: #ffffff;
   text-align: center;
@@ -69,9 +92,9 @@
 .khoBau {
   position: absolute;
   left: 0;
-  top: 1209px;
-  width: 363.75px;
-  height: 408px;
+  top: calc(1209 * var(--u));
+  width: calc(363.75 * var(--u));
+  height: calc(408 * var(--u));
   display: block;
 }
 
@@ -79,8 +102,8 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 363.75px;
-  height: 408px;
+  width: calc(363.75 * var(--u));
+  height: calc(408 * var(--u));
   object-fit: cover;
   transition: opacity 0.25s ease;
 }
@@ -101,35 +124,38 @@
 
 .box4 {
   position: absolute;
-  left: 111px;
-  top: 174px;
-  width: 141.75px;
-  height: 141px;
+  left: calc(111 * var(--u));
+  top: calc(174 * var(--u));
+  width: calc(141.75 * var(--u));
+  height: calc(141 * var(--u));
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 7.5px;
-  padding: 22.5px;
-  border-radius: 375px;
-  background: radial-gradient(192px 326.25px at 0.9% 3%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
-  border: 2.25px solid rgba(255, 255, 255, 0.9);
-  -webkit-backdrop-filter: blur(15.75px);
-  backdrop-filter: blur(15.75px);
+  gap: calc(7.5 * var(--u));
+  padding: calc(22.5 * var(--u));
+  border-radius: calc(375 * var(--u));
+  background: radial-gradient(
+    calc(192 * var(--u)) calc(326.25 * var(--u)) at 0.9% 3%,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border: calc(2.25 * var(--u)) solid rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(calc(15.75 * var(--u)));
+  backdrop-filter: blur(calc(15.75 * var(--u)));
 }
 
-/* MY RESUME: 40px -> 30px, line-height 40px -> 30px */
 .myResume {
   flex-shrink: 0;
   font-family: var(--font-londrina);
-  font-size: 30px;
+  font-size: calc(30 * var(--u));
   font-weight: 400;
-  line-height: 30px;
+  line-height: calc(30 * var(--u));
   color: #ffffff;
   text-align: center;
   white-space: nowrap;
 }
 
-/* ===== Nhãn: 52px -> 39px, khung 496px -> 372px ===== */
+/* ===== Nhãn ===== */
 .aboutMe,
 .cultureArts,
 .educationPsychology,
@@ -137,17 +163,17 @@
 .communityService {
   position: absolute;
   font-family: var(--font-bubbles);
-  font-size: 39px;
+  font-size: calc(39 * var(--u));
   font-weight: 400;
   color: #ffffff;
   text-align: center;
 }
 
-.aboutMe             { left: 102.75px; top: 284.25px; width: 225px; }
-.cultureArts         { left: 480.75px; top: 367.5px;  width: 372px; }
-.educationPsychology { left: 843px;    top: 670.5px;  width: 372px; }
-.economics           { left: 371.25px; top: 999px;    width: 372px; }
-.communityService    { left: 855.75px; top: 1366.5px; width: 372px; }
+.aboutMe             { left: calc(102.75 * var(--u)); top: calc(284.25 * var(--u)); width: calc(225 * var(--u)); }
+.cultureArts         { left: calc(480.75 * var(--u)); top: calc(367.5 * var(--u));  width: calc(372 * var(--u)); }
+.educationPsychology { left: calc(843 * var(--u));    top: calc(670.5 * var(--u));  width: calc(372 * var(--u)); }
+.economics           { left: calc(371.25 * var(--u)); top: calc(999 * var(--u));    width: calc(372 * var(--u)); }
+.communityService    { left: calc(855.75 * var(--u)); top: calc(1366.5 * var(--u)); width: calc(372 * var(--u)); }
 
 /* ===== 5 con cá ===== */
 .fish {
@@ -163,14 +189,13 @@
   object-fit: cover;
 }
 
-.ca1 { left: 147px;    top: 86.25px;  width: 153.75px; height: 176.25px; }
-.ca2 { left: 549.75px; top: 156.75px; width: 244.5px;  height: 195px;    }
-.ca3 { left: 906px;    top: 447px;    width: 261px;    height: 209.25px; }
-.ca4 { left: 360.75px; top: 718.5px;  width: 417px;    height: 268.5px;  }
-.ca5 { left: 905.25px; top: 936px;    width: 337.5px;  height: 477px;    }
+.ca1 { left: calc(147 * var(--u));    top: calc(86.25 * var(--u));  width: calc(153.75 * var(--u)); height: calc(176.25 * var(--u)); }
+.ca2 { left: calc(549.75 * var(--u)); top: calc(156.75 * var(--u)); width: calc(244.5 * var(--u));  height: calc(195 * var(--u));    }
+.ca3 { left: calc(906 * var(--u));    top: calc(447 * var(--u));    width: calc(261 * var(--u));    height: calc(209.25 * var(--u)); }
+.ca4 { left: calc(360.75 * var(--u)); top: calc(718.5 * var(--u));  width: calc(417 * var(--u));    height: calc(268.5 * var(--u));  }
+.ca5 { left: calc(905.25 * var(--u)); top: calc(936 * var(--u));    width: calc(337.5 * var(--u));  height: calc(477 * var(--u));    }
 
 /* ===== HOVER: cá mờ đi khi rê vào cá hoặc chữ ===== */
-/* display: contents để <a> không làm đổi vị trí absolute của cá và nhãn */
 .fishLink {
   display: contents;
 }

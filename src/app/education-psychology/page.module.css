@@ -3,6 +3,7 @@
 .page {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-content: var(--font-nexa), sans-serif;
+  --u: 1px;
 
   position: relative;
   margin: 0 auto;
@@ -12,12 +13,15 @@
   background: #464973;
   color: #fff;
   font-family: var(--font-content);
+  transition: height 0.35s ease;
 }
 
 .page * { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* Nền: rộng full 1440px, cắt từ TRÊN xuống hết chiều cao trang */
-.bg { object-fit: cover; object-position: top center; }
+.bg { object-fit: cover; object-position: top center; z-index: 0; }
+
+.canvas { display: contents; }
 
 /* ===== Kính ===== */
 .glass {
@@ -44,7 +48,7 @@
 
 .panel {
   position: absolute;
-  --r: 15px;
+  --r: calc(15 * var(--u));
   transition: left 0.35s ease, top 0.35s ease, width 0.35s ease, height 0.35s ease;
 }
 
@@ -60,32 +64,43 @@
 
 .text {
   position: absolute;
-  font-size: 15px;          /* 20px */
+  font-size: calc(15 * var(--u));         /* 20px */
   font-weight: 400;
-  line-height: 18.75px;     /* 25px */
+  line-height: calc(18.75 * var(--u));    /* 25px */
 }
 
 /* đoạn intro nhỏ hơn: 18px / 23px */
-.textSm { font-size: 13.5px; line-height: 17.25px; }
+.textSm { 
+  font-size: calc(13.5 * var(--u)); 
+  line-height: calc(17.25 * var(--u)); 
+}
 
-.pic { position: absolute; border-radius: 12px; overflow: hidden; }
+.pic { 
+  position: absolute; 
+  border-radius: calc(12 * var(--u)); 
+  overflow: hidden; 
+}
 .cover { object-fit: cover; }
 
-.ring { position: absolute; padding: 7.5px; border-radius: 50%; }
+.ring { 
+  position: absolute; 
+  padding: calc(7.5 * var(--u)); 
+  border-radius: 50%; 
+}
 .ringInner { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
 
 /* ===== Nút My Website ===== */
 .btn {
   position: absolute;
-  left: 947.25px;
-  top: 542.25px;
-  height: 39px;
-  padding: 0 17px;
+  left: calc(947.25 * var(--u));
+  top: calc(542.25 * var(--u));
+  height: calc(39 * var(--u));
+  padding: 0 calc(17 * var(--u));
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(8 * var(--u));
   font-family: var(--font-bubbles);
-  font-size: 19.5px;
+  font-size: calc(19.5 * var(--u));
   color: #fff;
   text-decoration: none;
   white-space: nowrap;
@@ -98,12 +113,12 @@
 /* ===== PAX: dải ảnh tự chạy ngang ===== */
 .strip {
   position: absolute;
-  left: 683.25px;
-  top: 259.5px;
-  width: 689.25px;
-  height: 267px;
+  left: calc(683.25 * var(--u));
+  top: calc(259.5 * var(--u));
+  width: calc(689.25 * var(--u));
+  height: calc(267 * var(--u));
   display: flex;
-  gap: 7.5px;
+  gap: calc(7.5 * var(--u));
   overflow-x: auto;
   overflow-y: hidden;
   pointer-events: auto;
@@ -116,8 +131,8 @@
 .stripImg {
   flex: none;
   width: auto;
-  height: 267px;
-  border-radius: 13.5px;
+  height: calc(267 * var(--u));
+  border-radius: calc(13.5 * var(--u));
   object-fit: cover;
   user-select: none;
 }
@@ -198,4 +213,220 @@
 @media (prefers-reduced-motion: reduce) {
   .content { animation: none; }
   .panel, .pill, .nav a, .btn { transition: none; }
+}
+
+
+/* =====================================================
+   1024px -> 1439px: Thu hẹp menu trái, thu phóng UI phải
+   ===================================================== */
+@media (max-width: 1439px) {
+  .page {
+    --left: clamp(250px, 24vw, 340px);
+    --pad: 24px;
+    --u: calc((100vw - var(--left) - 2 * var(--pad)) / 888);
+
+    width: 100%;
+    height: auto !important; 
+    /* Dùng biến --h (nếu trang đổi height theo tab) hoặc cố định 810 */
+    min-height: calc((var(--h, 810) - 33) * var(--u) + 2 * var(--pad));
+    display: grid;
+    grid-template-columns: var(--left) minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    align-content: start;
+    padding: var(--pad);
+  }
+
+  .canvas {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: calc(var(--pad) + var(--left) - 493.5 * var(--u));
+    top: calc(var(--pad) - 33 * var(--u));
+    width: calc(1440 * var(--u));
+    height: calc(var(--h, 810) * var(--u));
+    pointer-events: none;
+  }
+
+  .crumb {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 1;
+    justify-self: start;
+    left: auto; top: auto;
+    height: 28px; padding: 0 14px;
+    font-size: 13px; --r: 14px;
+  }
+
+  .nav {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 2;
+    left: auto; top: auto; width: auto;
+    margin-top: 22px;
+    gap: 14px;
+    font-size: clamp(18px, 1.9vw, 26px);
+    line-height: 1.2;
+  }
+  .nav a { color: rgba(255, 255, 255, 0.45); }
+  .nav a.navActive { color: #fff; }
+
+  .pills {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 3;
+    left: auto; top: auto;
+    margin-top: 36px;
+    gap: 12px;
+  }
+  .pill { height: 42px; padding: 0 18px; font-size: clamp(14px, 1.45vw, 18px); }
+}
+
+
+/* =====================================================
+   < 1024px: Bố cục 1 cột. Tái sắp xếp order qua --o
+   ===================================================== */
+@media (max-width: 1023px) {
+  .page {
+    --u: 1px;
+    max-width: 760px;
+    min-height: 100dvh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    row-gap: 16px;
+    padding: 20px;
+  }
+
+  .canvas { display: contents; }
+  .panel { display: none; }
+
+  .crumb { grid-column: 1; grid-row: 1; }
+
+  .nav {
+    grid-column: 1; grid-row: 2;
+    margin-top: 0;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 8px 20px; font-size: 19px;
+  }
+  .nav a { color: rgba(255, 255, 255, 0.7); }
+  .nav a.navActive { color: #fff; }
+
+  .pills {
+    grid-column: 1; grid-row: 3;
+    margin-top: 0;
+    flex-direction: row; flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pill { height: 40px; font-size: 16px; }
+
+  /* Thẻ nội dung bọc lại thành Flexbox Wrap để dùng --o */
+  .content {
+    position: relative; z-index: 2;
+    grid-column: 1; grid-row: 4;
+    inset: auto;
+    pointer-events: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Gán order động để tự động sắp xếp các phần tử từ trên xuống dưới */
+  .text,
+  .pic,
+  .ring,
+  .strip,
+  .btn {
+    order: var(--o, 0);
+  }
+
+  /* Định dạng lại khối Text */
+  .text {
+    position: static !important;
+    left: auto !important; top: auto !important;
+    width: 100% !important;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 4px 0;
+  }
+  .textSm {
+    font-size: 14px;
+  }
+
+  /* Khung Ảnh */
+  .pic {
+    position: relative !important;
+    left: auto !important; top: auto !important;
+    width: calc(50% - 6px) !important;
+    height: 240px !important;
+    border-radius: 12px;
+  }
+
+  /* Khung Nhẫn (Ảnh tròn) */
+  .ring {
+    position: relative !important;
+    left: auto !important; top: auto !important;
+    width: 200px !important; height: 200px !important;
+    flex: 0 0 200px;
+    margin: 0 auto;
+    padding: 7px;
+  }
+
+  /* Dải cuộn ảnh ngang (PAX) */
+  .strip {
+    position: relative !important;
+    left: auto !important; top: auto !important;
+    width: 100% !important;
+    height: 180px !important;
+    gap: 8px;
+    margin: 8px 0;
+  }
+
+  .stripImg {
+    height: 180px !important;
+    border-radius: 10px;
+  }
+
+  /* Button */
+  .btn {
+    position: relative !important;
+    left: auto !important; top: auto !important;
+    height: 42px !important;
+    font-size: 18px !important;
+    margin: 6px 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .page { row-gap: 14px; padding: 16px; }
+  .nav { font-size: 17px; gap: 6px 16px; }
+  .pill { height: 38px; padding: 0 14px; font-size: 15px; }
+
+  .content { padding: 16px; gap: 10px; }
+  .text { font-size: 14px; line-height: 1.55; }
+  .textSm { font-size: 13px; }
+  
+  .pic { height: 210px !important; width: calc(50% - 5px) !important; }
+  .ring { width: 180px !important; height: 180px !important; flex-basis: 180px; }
+  .strip { height: 150px !important; }
+  .stripImg { height: 150px !important; }
+}
+
+@media (max-width: 479px) {
+  .page { row-gap: 12px; padding: 12px; }
+  .crumb { font-size: 12px; height: 26px; padding: 0 10px; }
+  .nav { flex-direction: column; gap: 6px; font-size: 15px; }
+  .pills { gap: 8px; }
+  .pill { height: 36px; padding: 0 12px; font-size: 14px; }
+
+  .content { padding: 14px; gap: 8px; border-radius: 14px; }
+  .text { font-size: 13px; line-height: 1.55; }
+  .textSm { font-size: 12px; }
+  
+  .pic { height: 170px !important; width: calc(50% - 4px) !important; }
+  .ring { width: min(70vw, 220px) !important; height: min(70vw, 220px) !important; flex-basis: min(70vw, 220px); }
+  .strip { height: 120px !important; }
+  .stripImg { height: 120px !important; }
 }
