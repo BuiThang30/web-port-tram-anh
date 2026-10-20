@@ -25,25 +25,20 @@ const INTRO_TITLE =
   '“Mom, I think I can never find a word that can describe myself accurately”';
 
 const INTRO_BODY =
-  'There used to be countless times I whispered to my mother in disappointment as I simply did not know how to define myself. As a child, I honestly wanted to pile every glorious adjective upon my shoulders, encompass it all and become the role model frequently appearing on my Facebook feed. Yet, I have finally found my own Tram Anh as I am gradually approaching the final stretch of my twelve years of formal education. Starting out as a tiny fish swimming around in a vast ocean, searching for a warm flow of water, I am now proudly growing into a brave shark that still embraces the genuine colour of myself and what I desire to become - a person who can balance between empathy and courage.';
+  'I used to whisper to Mom in disappointment, as I simply did not know how to define myself. As a child, I just wanted to have it all like the role models on my Facebook feed, yet nearing the end of my twelve school years has finally led me to my own Tram Anh. Starting out as a tiny fish in a vast ocean, I am now proudly growing into a brave shark that still embraces the genuine colour of myself and what I desire to become - a person who can balance between empathy and courage.';
 
 const WANDERER_1 =
-  'Far from being isolated, being a lonely introvert or anything people may think when it comes to traveling alone, I enjoy wandering on my own just because of something much simpler: This “sounds weird” habit gives me a pocket of peace to unwind and the space to observe how society functions around me. I used to be scared of the shouts of street vendors and the deafening blare of bus horns , since back then, I believed true peace could only be found in silence.';
+  'Far from being isolated or lonely, I wander on my own for a much simpler reason: this “weird” habit gives me a pocket of peace to unwind and observe society. Loud bus horns and street vendors’ shouts once scared me because I thought peace required silence.';
 
 const WANDERER_2 =
-  'Yet, as time passed by, I have realized that real peace will blossom within us and stay firm no matter where we stand. Covering more than 10 kilometers, my first trip at the age of 17 has taken me from the buzzling banks of Hoan Kiem lake, through the peaceful sanctuary of West Lake and lastly to my family\'s cozy apartment, entirely on foot, and alone. I have grown up in that way, in the most peaceful yet experienceful manner. And at the same time, my love for Ha Noi and the ‘blood of adventurers’ within my veins has gradually grown stronger, becoming my passion, my spirit, and the compass that directs my life.';
+  'Yet, as time passed, I have realized that real peace blossoms within us anywhere we stand. My first ten-kilometer walk alone at seventeen has led me from bustling Hoan Kiem Lake, past serene West Lake, and straight to my family’s cozy apartment. Since that day, those solitary walks have become my compass, nurturing  my love for Hanoi and the adventurer’s blood in my veins.';
 
 const FOOD_1 =
-  'Everything started from a piping hot bowl of Hue beef noodles that I wolfed down before English extra classes when I was in grade 8. The vendor usually gave me an extra piece of pork knuckle for each bowl, gently telling me “Just eat as much as possible, kids! You need the fuel for all that rigorous studying!”';
-
-const FOOD_2 =
-  'I want to bring the brimming bowl of Hue beef noodles and one thousand other Vietnamese dishes to other countries to help less fortunate people worldwide. And above all, I hope the taste of my growing-up journey will soothe the souls of those that have yet to be fairly loved.';
+  'My story began in grade eight with a piping hot bowl of Hue beef noodles before extra English class. The vendor usually gave me extra pork knuckle and gently said, “Eat up, kids! You need fuel for studying!”. Time has made me fall deeply for the fermented shrimp paste, the tender trotter, and hardest with her warmth, which inspired my dream to bring this brimming bowl and a thousand Vietnamese dishes to less fortunate people worldwide. Above all, I hope the taste of my growing-up journey will soothe the souls that have yet to be fairly loved.';
 
 const SPIRIT_1 =
-  'I have been ingrained with a deep - seated belief in Buddhism since I was just a child at the age of 5. From being taken to the pagodas every Tet holiday occasion by my parents, I now usually visit those sacred places on my own with no rigid schedule, whether while waiting for the SAT scores, IELTS scores or simply to let my hair down after the end-of-semester examinations.';
+  'Since I was five, I have carried a deep belief in Buddhism that grew from Tet pagoda visits with my parents into my own unscheduled habit whenever I await SAT and IELTS scores or unwind after exams. I also hold a strong faith in the law of cause and effect, which is mainly why I am still learning to restrain my anger, accept human differences, and practice empathy. Being spiritual never means being superstitious or unrealistic, as it has calmed my spirit and made me a more thoughtful, compassionate shark than ever.';
 
-const SPIRIT_2 =
-  'I also hold a strong faith in the law of cause and effect, which is mainly why I am still learning to restrain my anger, to accept the difference between individuals in society, and to practice my empathy as well. While being a spiritual believer does not necessarily mean being superstitious or unrealistic, it has actually soothed my disposition and helped me become a more thoughtful, compassionate shark than ever.';
 
 /* ====== VỊ TRÍ (Figma x 0.75) ====== */
 const PANEL: Record<Tab, { left: number; top: number; width: number; height: number }> = {
@@ -116,12 +111,10 @@ const TEXTS: Record<Tab, { left: number; top: number; width: number; text: strin
     { left: 947.25, top: 474.75, width: 417.75, text: WANDERER_2 },
   ],
   food: [
-    { left: 511.5,  top: 591.75, width: 417,    text: FOOD_1 },
-    { left: 947.25, top: 591.75, width: 416.25, text: FOOD_2 },
+    { left: 511.5,  top: 594.75, width: 853.5,    text: FOOD_1 },
   ],
   spiritual: [
-    { left: 511.5, top: 581.25, width: 417,    text: SPIRIT_1 },
-    { left: 948,   top: 581.25, width: 417.75, text: SPIRIT_2 },
+    { left: 511.5, top: 581.25, width: 853.5,    text: SPIRIT_1 },
   ],
 };
 

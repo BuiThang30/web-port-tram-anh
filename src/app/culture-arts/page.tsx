@@ -16,36 +16,33 @@ type Txt = { l: number; t: number; w: number; text: string; href?: string; cente
 type Pic = { src: string; l: number; t: number; w: number; h: number; round?: boolean; z?: number };
 type Ring = { src: string; l: number; t: number; d: number; z?: number };
 type Content = { texts: Txt[]; pics: Pic[]; rings: Ring[] };
+type Box = { l: number; t: number; w: number; h: number };
+type PanelRect = { left: number; top: number; width: number; height: number };
 
 const img = (p: string) => `/image/culture/${p}.png`;
 
-/* ====== NỘI DUNG ====== */
-const INTRO = `I have had the honor to brush against the word “culture” from a very young age when I was living with my beloved grandparents. Back then it was nothing more than a red, wooden doll engraved with some traditional patterns that they bought me from their graduate studies in Russia or the bright red set of “Ao yem” I wore for a birthday photoshoot. As time passed by, I have been nurtured with a deep love for the concepts of “culture” and “arts”, which later became my compass for realizing that these words extend far beyond customs. Those precious childhood memories ultimately guide my hands to build my own projects with the hope that they will become distinctive milestones along my personal journey and also a peaceful stop for those who are exploring the world - where any wandering souls like me can return to roots and their homelands.`;
+const INTRO = `To my younger self in my grandparents’ house, “culture” was simply the red wooden doll they brought back from graduate school in Russia and the crimson “Ao yem” in my birthday photos. Yet time has nurtured that early affection for art into a true compass that reaches far beyond the idea of customs. Those childhood memories now guide my hands to create projects that mark my personal journey and offer wandering souls like me a peaceful way back to their roots.`;
 
-const PRESS_1 = `From the start of 2026, I have had the valuable opportunity to work with the Agriculture and Environment Newspaper as well as the Voice of Vietnam Newspaper - two prestigious press agencies in Vietnam that are specialized in national social problems, environmental issues and up-to-date economic news.`;
+const PRESS_1 = `Since early 2026, my work at two prestigious press agencies in Vietnam, the Agriculture and Environment Newspaper and the Voice of Vietnam, has centered on urgent social, environmental, and economic issues.`;
 
-const PRESS_2 = `Through communicating with experts in sociology and professional journalists that have had more than 15 years of experience, I have learned to use literary language as a tool to convey valuable insights into culture and economics while maintaining impartiality and accuracy in journalism. But what stays the longest after all is probably the moral conduct, that a reporter must serve the people and reflect on the exact social state instead of suppressing the disadvantaged in society.`;
+const PRESS_2 = `From sociologists and veteran journalists of over 15 years, I learned to integrate literary grace with accuracy and impartiality in cultural and economic stories. Above all, the lesson that stays longest is moral: a reporter must serve the people and reflect reality honestly rather than suppress the disadvantaged.`;
 
-const ESSAY = `For a long time, I have been holding the belief that reading and writing culture is the representative of a nation’s cultural heritage. That is exactly what motivates me to build up this photo essay: to explore how Vietnamese people preserve their culture within each fragile word they write on page or read aloud. Traveling from the Vietnam Museum of Ethnology, through Hanoi Museum, Dinh Le bookstreet, and further to Linh Ung Non Nuoc Pagoda in Da Nang and Thien Mu temple in Hue, my adventurous spirit has been entirely satisfied with overwhelming knowledge about culture, national heritage and above all, a profound sense of pride and patriotism. I hope while reading the essay I wrote and poring over 80+ pictures I took with my iPhone 11, people can slow down to admire Vietnam’s 1000 - year history and ultimately hold the brush more firmly each day to develop my beloved hometown’s cultural foundation.`;
+const ESSAY = `I have always believed that how a nation reads and writes shows how far it has come. That belief carried me from the Vietnam Museum of Ethnology to the Hanoi Museum, then south to Linh Ung Non Nuoc Pagoda in Da Nang and Thien Mu Temple in Hue, where heritage fed my adventurous spirit and filled my chest with pride. So while reading my essay and lingering over the 80+ pictures I took, I hope people will slow down, admire Vietnam’s thousand years of history, and hold their brush a little more firmly each day, to lay one more stone in the cultural foundation of my beloved hometown.`;
 
-const INCENSE = `As a spiritual believer, I have had the chance to touch the incense stick from a very young age - whether at my family's altar room, during Tet holiday or during my solo trip to Quan Thanh Pagoda to pray for my SAT score. I used to wonder a lot about the magical scent of incense, which holds immense power that can wind down my soul and soothe my nerves. Eventually, at the age of 17, I had the chance to visit the root of those simple incense sticks - my parental hometown Ung Hoa, Ha Noi. I wish to promote this traditional village to people worldwide and preserve the long-standing custom to the young generation, including me. That is why my reportage in which I collaborated with the village headman and famous artisans was produced and the skill-sharing workshop with over 70 students was organized. Through that experience, I have talked a lot, learned a lot, and most importantly, grown up a lot during my journey towards the origin.`;
+const INCENSE = `As a spiritual believer, I grew up with the aroma of incense at my family altar at Tet—something that also accompanied me on a solo trip to Quan Thanh Pagoda. I always wondered why its scent soothes my nerves, so at 17 I traced it to Quang Phu Cau Incense Village - Ung Hoa, my parents’ hometown in Hanoi. I wanted the world to know this village and my generation to keep its craft alive, so I made a news reportage with the headman and famous artisans and ran a workshop for 70+ students. Along the way, I talked, learned, and ultimately, grew up a lot.`;
 
-const PANTHEON_1 = `As a spiritual believer, I love to explore how people across different creeds use graceful lines carefully painted on paper to express their worship. Driven by this burning curiosity, I decided to set up this project by collecting photos of traditional worship paintings on my own and composing poems of both traditional and modern, contemporary types to analyze them respectively.`;
+const PANTHEON_1 = `As a spiritual believer, I love wondering how people of different creeds let graceful lines on paper carry their prayers. That curiosity pushed me to photograph traditional worship paintings on my own and write poems, both traditional and modern, to read each painting closely. I hope those who cannot travel far to see them can still admire them from home, and come to love the religious diversity of our homeland.`;
 
-const PANTHEON_2 = `I hope my effort can disseminate traditional knowledge to others who are unable to travel far to admire those beautiful paintings and ultimately cultivate a deep love for our homeland’s religious diversity.`;
+const CONCERT_1 = `As Head of Content, Media and English MC for the “Viet Nam tinh hoa” concert in the second season of Aria Project - a music initiative founded by Hanoi high school students, I have come to appreciate how music can make meaningful changes to society. But above all, what stays with me longest is my MC debut, when I made my first mistake in public. My face burned, but I kept going, and that night taught me to welcome mistakes and let myself stumble, because that is how I grow stronger.`;
 
-const CONCERT_1 = `Accompanying with Aria Project, a music initiative founded by high school students in Ha Noi,  throughout the second season, I have had the opportunity to contribute positively to Vietnamese cultural beauty by participating in the “Viet Nam tinh hoa” concert. During that experience as the head of media and English Master of ceremonies, I have learned a lot, especially about how music can make considerable meaningful changes to the society as a whole.`;
+const VIEWER_PAD = 60;
+const EXTRA = 28;
+const SHRINK: Tab[] = ['pantheon', 'concert'];
 
-const CONCERT_2 = `But above all, what stays longest is my debut as the MC for an event - the first time I made a mistake in public, and how I handled my embarrassment to continue the performance, and by that I have grown up a lot - ready to welcome the mistake and allow myself to stumble sometimes just to grow stronger.`;
-
-/* ====== VỊ TRÍ (Figma x 0.75) ====== */
-const VIEWER_PAD = 60; // khoảng trống trên/dưới slide trong khung kính
-const EXTRA = 28; // chừa dưới nội dung khi khung tự kéo dài
 const HEIGHT: Record<Tab, number> = {
   intro: 810, press: 987, essay: 745.5, incense: 1559, pantheon: 810, concert: 810,
 };
 
-type PanelRect = { left: number; top: number; width: number; height: number };
 const PANEL: Record<Tab, PanelRect> = {
   intro:    { left: 688.5, top: 37.5,  width: 693, height: 693 },
   press:    { left: 688.5, top: 37.5,  width: 693, height: 923.25 },
@@ -59,16 +56,14 @@ const VIEWER_PANEL: PanelRect = { left: 690.75, top: 108, width: 693, height: 67
 const CONTENT: Record<Tab, Content> = {
   intro: {
     texts: [{ l: 721.5, t: 69, w: 628.5, text: INTRO }],
-    // 1 ảnh xuất sẵn từ Figma (đã gồm collage + 5 vòng tròn) -> chỉ cần đặt vào khung, không xếp riêng từng ảnh
     pics: [{ src: img('intro/collage'), l: 657.75, t: 264, w: 762, h: 477 }],
     rings: [],
   },
   press: {
     texts: [
-      // href: thay bằng link bài báo thật
       { l: 688.5, t: 361.5, w: 693, center: true, href: 'https://nongnghiepmoitruong.vn/ban-tinh-ca-le-hoi-va-hoa-tren-cao-nguyen-da-d799027.html', text: 'The Festival Love Song and Flowers on the Rocky Plateau' },
       { l: 717.75, t: 399, w: 619.5, text: PRESS_1 },
-      { l: 895.5, t: 767.25, w: 279, center: true, href: 'https://vov.vn/thi-truong/gia-bac-hom-nay-93-gia-bac-trong-nuoc-giam-trong-phien-dau-tuan-post1274172.vov', text: 'VOV | Silver prices today, March 9: Domestic silver prices fell at the start of the week.' },
+      { l: 688.5, t: 767.25, w: 693, center: true, href: 'https://vov.vn/thi-truong/gia-bac-hom-nay-93-gia-bac-trong-nuoc-giam-trong-phien-dau-tuan-post1274172.vov', text: 'VOV | Silver prices today, March 9: Domestic silver prices fell at the start of the week.' },
       { l: 717, t: 822.75, w: 620, text: PRESS_2 },
     ],
     pics: [
@@ -88,38 +83,30 @@ const CONTENT: Record<Tab, Content> = {
     ],
   },
   pantheon: {
-    texts: [
-      { l: 729.75, t: 156.5, w: 417.75, text: PANTHEON_1 },
-      { l: 947.25, t: 558.4, w: 385.5,  text: PANTHEON_2 },
-    ],
+    texts: [{ l: 729.75, t: 156.5, w: 245, text: PANTHEON_1 }],
     pics: [
-      { src: img('pantheon/intro-1'), l: 729.75,  t: 314.25, w: 271.5, h: 203.25, round: true },
-      { src: img('pantheon/intro-2'), l: 1008,    t: 314.25, w: 153,   h: 203.25, round: true },
-      { src: img('pantheon/intro-3'), l: 1167.75, t: 314.25, w: 197.25, h: 203.25, round: true },
+      { src: img('pantheon/intro-2'), l: 1008,    t: 156.5, w: 153,    h: 203.25, round: true },
+      { src: img('pantheon/intro-3'), l: 1167.75, t: 156.5, w: 197.25, h: 203.25, round: true },
+      { src: img('pantheon/intro-1'), l: 1008,    t: 372,   w: 357,    h: 264,    round: true },
     ],
     rings: [
-      { src: img('pantheon/intro-ring-1'), l: 1177.5, t: 174.75, d: 160.5 },
-      { src: img('pantheon/intro-ring-2'), l: 752.25, t: 488.25, d: 160.5 },
+      { src: img('pantheon/intro-ring-1'), l: 1284, t: 278, d: 160.5 },
+      { src: img('pantheon/intro-ring-2'), l: 912,  t: 521, d: 160.5 },
     ],
   },
   concert: {
-    texts: [
-      { l: 711,    t: 414.75, w: 411.75, text: CONCERT_1 },
-      { l: 947.25, t: 646.9,  w: 415.5,  text: CONCERT_2 },
-    ],
-    pics: [], // ảnh trên cùng là slideshow (xem CONCERT_SLIDES)
+    texts: [{ l: 720.6, t: 419, w: 643, text: CONCERT_1 }],
+    pics: [],
     rings: [
-      { src: img('concert/ring-1'), l: 1148.25, t: 421.5, d: 193.5 },
-      { src: img('concert/ring-2'), l: 729.75,  t: 577.5, d: 178.5 },
+      { src: img('concert/ring-1'), l: 711.4, t: 241.6, d: 177 },
+      { src: img('concert/ring-2'), l: 1179,  t: 148,   d: 189 },
     ],
   },
 };
 
-/* Concert: 4 ảnh trên cùng tự đổi qua lại (crossfade) -> public/image/culture/concert/poster-1..4.png */
-type Box = { l: number; t: number; w: number; h: number };
 const CONCERT_SLIDES = [1, 2, 3, 4].map((n) => img(`concert/poster-${n}`));
 const CONCERT_BOX: Box = { l: 790.5, t: 61.5, w: 489, h: 325.5 };
-const CONCERT_INTERVAL = 4000; // ms mỗi ảnh
+const CONCERT_INTERVAL = 4000;
 
 const PILLS: { id: Exclude<Tab, 'intro'>; label: string }[] = [
   { id: 'press',    label: 'Writer at State-run press agencies' },
@@ -137,10 +124,9 @@ const NAV = [
   { href: '/community-service', label: 'Community Service' },
 ];
 
-const ESSAY_IMGS = Array.from({ length: 6 }, (_, i) => img(`essay/essay-${i + 1}`)); // đổi số lượng ảnh ở đây
+const ESSAY_IMGS = Array.from({ length: 6 }, (_, i) => img(`essay/essay-${i + 1}`));
 const RECAP_IMGS = Array.from({ length: 6 }, (_, i) => img(`incense/recap-${i + 1}`));
 
-/* ====== Khung ảnh tự đổi qua lại (crossfade) ====== */
 function Slides({ srcs, box, interval = 4000 }: { srcs: string[]; box: Box; interval?: number }) {
   const [current, setCurrent] = useState(0);
 
@@ -165,7 +151,6 @@ function Slides({ srcs, box, interval = 4000 }: { srcs: string[]; box: Box; inte
   );
 }
 
-/* ====== Dải ảnh tự chạy ngang (kéo chuột / cuộn để xem, rê chuột vào thì dừng) ====== */
 function Strip({ srcs }: { srcs: string[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
@@ -181,7 +166,7 @@ function Strip({ srcs }: { srcs: string[] }) {
         pos = el.scrollLeft;
       } else {
         pos += 0.6;
-        if (pos >= el.scrollWidth / 2) pos -= el.scrollWidth / 2; // lặp vô hạn (danh sách nhân đôi)
+        if (pos >= el.scrollWidth / 2) pos -= el.scrollWidth / 2;
         el.scrollLeft = pos;
       }
       raf = requestAnimationFrame(tick);
@@ -209,12 +194,10 @@ function Strip({ srcs }: { srcs: string[] }) {
   );
 }
 
-/* ====== Slide tranh thờ (Patheon): mũi tên trái/phải ====== */
 function Viewer({ sub, top, arrowTop, onHeight }: { sub: Sub; top: number; arrowTop: number; onHeight: (h: number) => void }) {
   const [i, setI] = useState(0);
   const slideRef = useRef<HTMLDivElement>(null);
 
-  // đo chiều cao slide hiện tại -> cha căn giữa slide trong khung kính
   useEffect(() => {
     const el = slideRef.current;
     if (!el) return;
@@ -237,7 +220,6 @@ function Viewer({ sub, top, arrowTop, onHeight }: { sub: Sub; top: number; arrow
       <div key={i} ref={slideRef} style={{ top }} className={`${styles.slide} ${styles['slide_' + s.layout]} ${s.wide ? styles.wide : ''}`}>
         {s.wide && <h2 className={styles.slideTitle + ' ' + styles.titleWide}>{s.title}</h2>}
         {s.layout === 'right' ? (
-          // layout right: cột phải = ảnh + (poem2 nằm dưới ảnh)
           <div className={styles.slideSide}>
             <div className={styles.slideImg} style={s.imgH ? { height: s.imgH } : undefined}>
               <Image className={styles.contain} src={src} alt={s.title} fill sizes="300px" />
@@ -265,13 +247,8 @@ function Viewer({ sub, top, arrowTop, onHeight }: { sub: Sub; top: number; arrow
   );
 }
 
-/* ====== Tính tỉ lệ phóng cho màn < 1440 ======
-   Khối nội dung (toạ độ Figma, từ x = 657.75 đến 1420, tức collage Intro) được
-   phóng để LẤP ĐẦY chiều rộng cột phải: không chặn trần, không căn giữa,
-   nên không còn khoảng trống ở giữa màn hình.
-   Phải khớp với padding / --left / column-gap trong CSS. */
-const DESIGN_X0 = 657.75;          // x bên trái nhất của nội dung (collage Intro)
-const DESIGN_W = 1420 - DESIGN_X0; // bề rộng thiết kế = 762.25
+const DESIGN_X0 = 657.75;
+const DESIGN_W = 1420 - DESIGN_X0;
 
 function useFit() {
   const [fit, setFit] = useState({ s: 1, cx: -DESIGN_X0, left: 300 });
@@ -283,9 +260,8 @@ function useFit() {
       const pad = wide ? 24 : 16;
       const left = Math.min(400, Math.max(250, w * 0.26));
       const colW = wide ? w - pad * 2 - left - 24 : w - pad * 2;
-      const s = colW / DESIGN_W;    // lấp đầy cột phải
-      const cx = -DESIGN_X0 * s;    // neo sát đầu cột phải
-      setFit({ s, cx, left });
+      const s = colW / DESIGN_W;
+      setFit({ s, cx: -DESIGN_X0 * s, left });
     };
     calc();
     window.addEventListener('resize', calc);
@@ -303,7 +279,6 @@ export default function CultureArtsPage() {
   const toggleTab = (id: Tab) => { setTab((cur) => (cur === id ? 'intro' : id)); setSubKey(null); };
   const toggleSub = (k: string) => setSubKey((cur) => (cur === k ? null : k));
 
-  // Đo đáy của nội dung (chữ, ảnh, slide) -> khung kính và trang tự kéo dài theo
   const contentRef = useRef<HTMLDivElement>(null);
   const [bottom, setBottom] = useState(0);
   const [slideH, setSlideH] = useState(540);
@@ -325,16 +300,16 @@ export default function CultureArtsPage() {
       Array.from(el.children).forEach((n) => ro.observe(n));
       measure();
     };
-    const mo = new MutationObserver(observe); // slide đổi -> đo lại
+    const mo = new MutationObserver(observe);
     mo.observe(el, { childList: true });
     observe();
-    document.fonts?.ready.then(measure); // đo lại khi font nạp xong
+    document.fonts?.ready.then(measure);
     return () => { ro.disconnect(); mo.disconnect(); };
   }, [tab, subKey]);
 
   const sub = tab === 'pantheon' ? SUBS.find((s) => s.key === subKey) ?? null : null;
   const C = sub ? null : CONTENT[tab];
-  // Màn xem slide: khung cao tối thiểu 675, slide luôn nằm GIỮA khung (cao hơn thì khung tự kéo dài)
+
   let panel: PanelRect;
   let slideTop = 0;
   if (sub) {
@@ -343,7 +318,9 @@ export default function CultureArtsPage() {
     slideTop = VIEWER_PANEL.top + (h - slideH) / 2;
   } else {
     const base = PANEL[tab];
-    panel = { ...base, height: Math.max(base.height, bottom + EXTRA - base.top) };
+    const fitted = bottom + EXTRA - base.top;
+    const h = SHRINK.includes(tab) && bottom > 0 ? fitted : Math.max(base.height, fitted);
+    panel = { ...base, height: h };
   }
   const pageH = Math.max(HEIGHT[tab], panel.top + panel.height + 27);
   const arrowTop = panel.top + panel.height / 2 - 11;
@@ -360,7 +337,6 @@ export default function CultureArtsPage() {
     <main className={`${styles.page} ${rubik.variable} ${nexa.variable}`} style={vars}>
       <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
 
-      {/* stage + canvas: desktop không tạo khung; < 1440 thì canvas được phóng theo --s */}
       <div className={styles.stage}>
         <div className={styles.canvas}>
           <div className={`${styles.glass} ${styles.panel} ${sub ? styles.dark : ''}`} style={panel} />
@@ -417,7 +393,6 @@ export default function CultureArtsPage() {
             {sub && <Viewer key={sub.key} sub={sub} top={slideTop} arrowTop={arrowTop} onHeight={setSlideH} />}
           </div>
 
-          {/* Menu con của Patheon (nằm trong canvas để phóng cùng nội dung) */}
           {tab === 'pantheon' &&
             SUBS.map((s) => (
               <button

@@ -3,11 +3,17 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Rubik_Bubbles } from 'next/font/google';
+import { Rubik_Bubbles, Be_Vietnam_Pro } from 'next/font/google';
 import localFont from 'next/font/local';
 import styles from './page.module.css';
 
 const rubik = Rubik_Bubbles({ weight: '400', subsets: ['latin'], variable: '--font-rubik' });
+/* Font cho đoạn văn: chữ "a" hiển thị đúng (SVN-Nexa Bold làm "a" thành "o") */
+const body = Be_Vietnam_Pro({
+  weight: ['500', '600'],
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-body',
+});
 const nexa = localFont({
   src: '../../../public/fonts/SVN-Nexa Bold.ttf',
   weight: '400',
@@ -15,13 +21,13 @@ const nexa = localFont({
 });
 
 type Tab = 'intro' | 'vocarbit' | 'ulis' | 'granny' | 'pax';
+/* Toạ độ của text / pic / ring giờ là TƯƠNG ĐỐI so với góc trên-trái của panel */
 type Txt = { l: number; t: number; w: number; text: string; sm?: boolean };
 type Pic = { src: string; l: number; t: number; w: number; h: number };
 type Ring = { src: string; l: number; t: number; d: number };
 type Content = { texts: Txt[]; pics: Pic[]; rings: Ring[] };
 type PanelRect = { left: number; top: number; width: number; height: number };
 
-/* Các hàm tiện ích chuyển đổi pixel sang tỷ lệ responsive & gán thứ tự order trên mobile */
 const u = (n: number) => `calc(${n} * var(--u))`;
 const ord = (t: number, isText = false): CSSProperties =>
   ({ '--o': Math.round(isText ? t - 5 : t) }) as CSSProperties;
@@ -29,71 +35,70 @@ const ord = (t: number, isText = false): CSSProperties =>
 const img = (p: string) => `/image/education/${p}.png`;
 
 /* ====== NỘI DUNG ====== */
-const INTRO = `I used to be a confused high school student who was torn between two contrasting subject combinations and eventually chose the unsuitable one because of a lack of understanding of my own preference. That stark reality was why I decided to adopt education and psychology as other serious interests, not because I want to direct the younger generation to choose any specific fields, but I want them to experience their 12 years of academic pursuit without any disbelief in their own competency. Education, to me, is about learning with joy, growing up day by day, and ultimately helping to change a sense of inequality still existing in this world and advocate for the better.`;
+const INTRO = `I once lost my confidence in high school simply because I didn't understand myself well enough to choose the right subjects, leaving me struggling to match my classmates' pace. That stumble has inspired my passion for education and psychology. My goal isn't to pick a path for the next generation, because what truly matters to me is helping them spend twelve years growing up with joy, believing in their own abilities, and advocating for a fairer society.`;
 
-const VOCARBIT = `My teenage stumble of choosing an unsuitable subject combination has motivated me to establish a website that is based on the Holland occupational themes with an eye to identifying student’s personality on the surface level, from that direct career paths for them. But what makes them stand out from other websites available on the Internet is that I have redesigned all the questions so it will stick to a specific context as well as analyze specific work environments, career options, high school subject combinations, university majors, and skill development for each personality code. After publication, the website has been tested and confirmed about its accuracy by over 300 students from different social backgrounds in Vietnam and worldwide. Ultimately, I hope this website can help students head in the right direction and positively pursue their academic milestones, making every little effort they spare totally worthwhile.`;
+const VOCARBIT = `That teenage misstep with my study track inspired me to create a Holland-based website that maps out students' initial personalities and career paths. What sets it apart from other platforms is how I tailored the questions to specific situations, connecting each result to detailed work settings, school subjects, college majors, and skill sets. Since over 300 students from various backgrounds in Vietnam and abroad have already validated its accuracy, I hope this tool helps young people find the right direction so every bit of effort they put into school truly counts.`;
 
-const ULIS_1 = `Having had the best four years of secondary school at ULIS Middle School (UMS), I was inspired to become an assistant for the school admission phase through helping students to familiarize with the PSA test - an advanced testing system that evaluates primary students’ ability in a modern and holistic way, as well as preparing each portion of snack for youngsters as an action of caring from the school committee.`;
+const ULIS_1 = `Four golden years at ULIS Middle School has inspired me to become an admissions assistant to guide primary kids through the modern, holistic PSA test and pack snacks that showed the school's care. I also contributed to social science lesson plans and helped run activities twice a month for UMS's "Happy School" vision. Though my role felt tiny beside the school's progress, thanking my childhood home has shown me how equitable education works in real life.`;
 
-const ULIS_2 = `Moreover, I also dived into how my old school strives to become “An happy school” by directly contributing to the lesson plan of social science subjects and helping to organize extracurricular activities for students that happen two times a month. Although my participation seems minimal when compared to how the school has progressed, I believe it can express my gratitude for all those lovely childhood memories and help me gain insight into equitable education in the most practical way.`;
+const GRANNY = `In search of inner peace, I used to try knitting and crochet after a viral headline claimed youth loved "grannycore" crafts, yet weeks of calming practice proved the hobby wasn't for me. Because I wondered if the news was truly objective, I launched my iCAN research project - The Grannycore Hypothesis. Collecting data and uncovering unexpected results not only taught me economics and data science, but it also reminded me at the two Vietnamese news agencies where I work that honest journalism relies on systematic statistics rather than personal bias.`;
 
-const GRANNY = `I used to give knitting and crochet a try after reading a viral headline about their increasing popularity, but eventually realized yarn crafts just aren't my thing. That is why I chose the Grannycore Hypothesis as the topic for iCAN and my serious research project as well - to discover if the news was objective enough. The whole process of collecting and analyzing data has taught me knowledge about economics and data science, and most importantly, the significance of impartiality in journalism. It reminds me to remain unbiased, systematic and depend on statistics instead of personal views whenever conveying any information to the community, a thing that also resonates with me during my collaboration at 2 news agencies in Vietnam.`;
-
-const PAX = `Having encountered a lot of individuals who struggle with mental issues, I wish to take up psychology seriously to improve the social mental well-being. My little desire was partly fulfilled during my internship at PAX clinic - a prestigious mental healthcare center at the heart of Hanoi city. I have had the chance to listen to a heartfelt guidance from professor Vo Van Ban, a leading expert in psychiatry and psychotherapy in Vietnam with over 50 years of experience, observe the psychological consultation process, and  practice trust-building with clients. But above all, I have learned to lend a sympathetic ear when necessary and most importantly, to respect others’ differences without judging and hurting them.`;
+const PAX = `Seeing people suffer from mental issues has inspired me to pursue psychology for the good of our community, a wish that came alive during my internship at PAX Clinic in the heart of Hanoi. There, Professor Vo Van Ban shared heartfelt wisdom from his fifty years in psychiatry and psychotherapy as I observed consultations and practiced building trust with clients. Above all, I learned to offer a sympathetic ear and respect every person's differences without judging or hurting them.`;
 
 const WEBSITE_URL = 'https://thevocarbit.com/home';
 
-/* ====== VỊ TRÍ (Figma x 0.75, trang cao 810) ====== */
+/* ====== VỊ TRÍ PANEL (Figma x 0.75, trang cao 810) ====== */
 const PANEL: Record<Tab, PanelRect> = {
-  intro:    { left: 634.5, top: 91.5, width: 765, height: 378 },
+  intro:    { left: 634.5, top: 91.5, width: 765, height: 461 },
   vocarbit: { left: 649.5, top: 33,   width: 750, height: 577.5 },
-  ulis:     { left: 649.5, top: 33,   width: 750, height: 741.75 },
-  granny:   { left: 649.5, top: 33,   width: 750, height: 741.75 },
+  ulis:     { left: 649.5, top: 33,   width: 750, height: 660 },
+  granny:   { left: 649.5, top: 15,   width: 750, height: 776 },
   pax:      { left: 649.5, top: 33,   width: 750, height: 572.25 },
 };
 
+/* ====== NỘI DUNG + VỊ TRÍ (tương đối so với panel) ====== */
 const CONTENT: Record<Tab, Content> = {
+  /* Ảnh 1: chữ nằm trên cùng trong panel, 3 vòng tròn xếp hàng ngang bên dưới */
   intro: {
-    texts: [{ l: 802.5, t: 144.75, w: 552, text: INTRO, sm: true }],
+    texts: [{ l: 40, t: 52, w: 685, text: INTRO, sm: true }],
     pics: [],
     rings: [
-      { src: img('intro/speaker'),    l: 519.75, t: 125.25, d: 258 },
-      { src: img('intro/library'),    l: 720.75, t: 382.5,  d: 320.25 },
-      { src: img('intro/graduation'), l: 1099.5, t: 362.25, d: 229.5 },
+      { src: img('intro/speaker'),    l: 39,  t: 231, d: 155 },
+      { src: img('intro/library'),    l: 257, t: 204, d: 215 },
+      { src: img('intro/graduation'), l: 520, t: 244, d: 180 },
     ],
   },
   vocarbit: {
-    texts: [{ l: 682.5, t: 303, w: 682.5, text: VOCARBIT }],
+    texts: [{ l: 33, t: 270, w: 682.5, text: VOCARBIT }],
     pics: [
-      { src: img('vocarbit/site-1'), l: 682.5, t: 69, w: 339,    h: 201 },
-      { src: img('vocarbit/site-2'), l: 1032,  t: 69, w: 339.75, h: 201 },
+      { src: img('vocarbit/site-1'), l: 33,    t: 36, w: 339,    h: 201 },
+      { src: img('vocarbit/site-2'), l: 382.5, t: 36, w: 339.75, h: 201 },
     ],
     rings: [],
   },
+  /* Ảnh 3: hàng trên 3 ảnh, hàng dưới 2 ảnh, lấp kín chiều ngang panel */
   ulis: {
-    texts: [
-      { l: 684, t: 65.25,  w: 681, text: ULIS_1 },
-      { l: 684, t: 405.75, w: 681, text: ULIS_2 },
-    ],
+    texts: [{ l: 24, t: 18, w: 702, text: ULIS_1, sm: true }],
     pics: [
-      { src: img('ulis/ulis-1'), l: 809.25, t: 174.75, w: 270,   h: 204.75 },
-      { src: img('ulis/ulis-2'), l: 1086,   t: 174.75, w: 153,   h: 204.75 },
-      { src: img('ulis/ulis-3'), l: 782.25, t: 542.25, w: 157.5, h: 210 },
-      { src: img('ulis/ulis-4'), l: 945.75, t: 542.25, w: 157.5, h: 210 },
-      { src: img('ulis/ulis-5'), l: 1110,   t: 542.25, w: 157.5, h: 210 },
+      { src: img('ulis/ulis-1'), l: 24,  t: 150, w: 326, h: 184 },
+      { src: img('ulis/ulis-4'), l: 356, t: 150, w: 170, h: 184 },
+      { src: img('ulis/ulis-2'), l: 532, t: 150, w: 194, h: 184 },
+      { src: img('ulis/ulis-3'), l: 24,  t: 344, w: 290, h: 292 },
+      { src: img('ulis/ulis-5'), l: 320, t: 344, w: 406, h: 292 },
     ],
     rings: [],
   },
+  /* Ảnh 5: poster và ảnh thuyết trình to, rộng full chiều ngang panel */
   granny: {
-    texts: [{ l: 681, t: 57.75, w: 661.5, text: GRANNY }],
+    texts: [{ l: 24, t: 14, w: 702, text: GRANNY, sm: true }],
     pics: [
-      { src: img('granny/poster'),     l: 789, t: 252.75, w: 503.25, h: 239.25 },
-      { src: img('granny/presenting'), l: 789, t: 503.25, w: 503.25, h: 249 },
+      { src: img('granny/poster'),     l: 24, t: 150, w: 702, h: 316 },
+      { src: img('granny/presenting'), l: 24, t: 476, w: 702, h: 276 },
     ],
     rings: [],
   },
   pax: {
-    texts: [{ l: 682.5, t: 57, w: 671.25, text: PAX }],
+    texts: [{ l: 24, t: 20, w: 702, text: PAX }],
     pics: [],
     rings: [],
   },
@@ -117,7 +122,7 @@ const NAV = [
 const PAX_IMGS = Array.from({ length: 5 }, (_, i) => img(`pax/pax-${i + 1}`));
 
 /* ====== Dải ảnh tự chạy ngang (kéo chuột / cuộn để xem, rê chuột vào thì dừng) ====== */
-function Strip({ srcs }: { srcs: string[] }) {
+function Strip({ srcs, panel }: { srcs: string[]; panel: PanelRect }) {
   const ref = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
   const drag = useRef<{ x: number; s: number } | null>(null);
@@ -141,11 +146,17 @@ function Strip({ srcs }: { srcs: string[] }) {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  /* Ảnh 7: dải ảnh cao hơn, bắt đầu sát lề trái panel và chạy tới mép phải */
+  const L = 24;
+  const T = 296;
+  const W = 702;
+  const H = 260;
+
   return (
     <div
       ref={ref}
       className={styles.strip}
-      style={{ left: u(683.25), top: u(259.5), width: u(689.25), height: u(267), ...ord(259.5) }}
+      style={{ left: u(panel.left + L), top: u(panel.top + T), width: u(W), height: u(H), ...ord(T) }}
       onMouseEnter={() => (paused.current = true)}
       onMouseLeave={() => { paused.current = false; drag.current = null; }}
       onPointerDown={(e) => { drag.current = { x: e.clientX, s: ref.current?.scrollLeft ?? 0 }; }}
@@ -168,44 +179,63 @@ export default function EducationPsychologyPage() {
   const P = PANEL[tab];
 
   return (
-    <main 
-      className={`${styles.page} ${rubik.variable} ${nexa.variable}`}
+    <main
+      className={`${styles.page} ${rubik.variable} ${nexa.variable} ${body.variable}`}
       style={{ height: u(810), '--h': 810 } as CSSProperties}
     >
       <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
 
       <div className={styles.canvas}>
-        <div 
-          className={`${styles.glass} ${styles.panel}`} 
-          style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }} 
+        <div
+          className={`${styles.glass} ${styles.panel}`}
+          style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }}
         />
 
         <div key={tab} className={styles.content}>
           {C.texts.map((t) => (
-            <p 
-              key={t.text} 
-              className={`${styles.text} ${t.sm ? styles.textSm : ''}`} 
-              style={{ left: u(t.l), top: u(t.t), width: u(t.w), ...ord(t.t, true) }}
+            <p
+              key={t.text}
+              className={`${styles.text} ${t.sm ? styles.textSm : ''}`}
+              style={{
+                left: u(P.left + t.l),
+                top: u(P.top + t.t),
+                width: u(t.w),
+                fontFamily: 'var(--font-body), sans-serif',
+                fontWeight: 600,
+                ...ord(t.t, true),
+              }}
             >
               {t.text}
             </p>
           ))}
 
           {C.pics.map((p) => (
-            <div 
-              key={p.src} 
-              className={styles.pic} 
-              style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+            <div
+              key={p.src}
+              className={styles.pic}
+              style={{
+                left: u(P.left + p.l),
+                top: u(P.top + p.t),
+                width: u(p.w),
+                height: u(p.h),
+                ...ord(p.t),
+              }}
             >
               <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
             </div>
           ))}
 
           {C.rings.map((r) => (
-            <div 
-              key={r.src} 
-              className={`${styles.glass} ${styles.ring}`} 
-              style={{ left: u(r.l), top: u(r.t), width: u(r.d), height: u(r.d), ...ord(r.t) }}
+            <div
+              key={r.src}
+              className={`${styles.glass} ${styles.ring}`}
+              style={{
+                left: u(P.left + r.l),
+                top: u(P.top + r.t),
+                width: u(r.d),
+                height: u(r.d),
+                ...ord(r.t),
+              }}
             >
               <div className={styles.ringInner}>
                 <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
@@ -214,11 +244,11 @@ export default function EducationPsychologyPage() {
           ))}
 
           {tab === 'vocarbit' && (
-            <a 
-              className={`${styles.glass} ${styles.btn}`} 
+            <a
+              className={`${styles.glass} ${styles.btn}`}
               style={{ left: u(947.25), top: u(542.25), ...ord(542.25) }}
-              href={WEBSITE_URL} 
-              target="_blank" 
+              href={WEBSITE_URL}
+              target="_blank"
               rel="noreferrer"
             >
               My Website
@@ -228,7 +258,7 @@ export default function EducationPsychologyPage() {
             </a>
           )}
 
-          {tab === 'pax' && <Strip srcs={PAX_IMGS} />}
+          {tab === 'pax' && <Strip srcs={PAX_IMGS} panel={P} />}
         </div>
       </div>
 
