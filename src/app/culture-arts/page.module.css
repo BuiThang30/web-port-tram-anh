@@ -68,7 +68,8 @@
   position: absolute;
   font-size: 15px;          /* 20px */
   font-weight: 400;
-  line-height: 18.75px;     /* 25px */
+  line-height: 24px;        /* trước: 18.75px */
+  letter-spacing: 0.01em;   /* thêm: chữ thoáng hơn */
 }
 
 .center { text-align: center; }
@@ -204,13 +205,14 @@
 .slideTitle {
   font-size: 21px;
   font-weight: 400;
-  line-height: 26px;
-  margin-bottom: 16px;
+  line-height: 28px;        /* trước: 26px */
+  margin-bottom: 20px;      /* trước: 16px */
 }
 
 .poem {
   font-size: 13.5px;
-  line-height: 17.25px;
+  line-height: 21px;        /* trước: 17.25px */
+  letter-spacing: 0.01em;
   white-space: pre-line;
 }
 

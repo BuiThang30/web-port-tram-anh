@@ -85,10 +85,10 @@
   font-family: var(--font-content);
   font-size: calc(15 * var(--u));
   font-weight: 400;
-  line-height: calc(18.75 * var(--u));
+  line-height: calc(24 * var(--u));
+  letter-spacing: 0.01em;
 }
 
-/* desktop: không tạo khung, giữ toạ độ tuyệt đối */
 .group {
   display: contents;
 }
@@ -235,7 +235,7 @@
 @media (max-width: 1199px) {
   .text {
     font-size: max(11px, calc(15 * var(--u)));
-    line-height: 1.25;
+    line-height: 1.55;                /* trước: 1.25 */
   }
   .crumb { font-size: max(11px, calc(13.5 * var(--u))); }
   .nav { font-size: max(18px, calc(30 * var(--u))); line-height: 1.2; }
@@ -317,7 +317,7 @@
     pointer-events: auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 26px;                        /* trước: 20px */
     padding: 22px;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.14);
@@ -340,7 +340,8 @@
     width: auto !important;
     order: 2;
     font-size: 15px;
-    line-height: 1.6;
+    line-height: 1.75;                /* trước: 1.6 */
+    letter-spacing: 0.01em;
   }
 
   .fish { display: none; }
@@ -410,9 +411,9 @@
   .nav { font-size: 17px; gap: 6px 16px; }
   .pill { height: 38px; padding: 0 14px; font-size: 15px; }
 
-  .content { padding: 16px; gap: 16px; }
+  .content { padding: 16px; gap: 22px; }   /* trước: 16px */
   .title { font-size: 20px; }
-  .text { font-size: 14px; line-height: 1.55; }
+  .text { font-size: 14px; line-height: 1.7; }   /* trước: 1.55 */
 
   .ring {
     width: 160px !important;
@@ -447,9 +448,9 @@
   .pills { gap: 8px; }
   .pill { height: 36px; padding: 0 12px; font-size: 14px; }
 
-  .content { padding: 14px; gap: 14px; border-radius: 14px; }
+  .content { padding: 14px; gap: 18px; border-radius: 14px; }   /* trước: gap 14px */
   .title { font-size: 18px; }
-  .text { font-size: 13px; line-height: 1.55; }
+  .text { font-size: 13px; line-height: 1.7; }   /* trước: 1.55 */
 
   .group { gap: 10px; }
 

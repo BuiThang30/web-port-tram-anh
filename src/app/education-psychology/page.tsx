@@ -60,12 +60,12 @@ const PANEL: Record<Tab, PanelRect> = {
 const CONTENT: Record<Tab, Content> = {
   /* Ảnh 1: chữ nằm trên cùng trong panel, 3 vòng tròn xếp hàng ngang bên dưới */
   intro: {
-    texts: [{ l: 40, t: 52, w: 685, text: INTRO, sm: true }],
+    texts: [{ l: 165, t: 50, w: 555, text: INTRO, sm: true }],
     pics: [],
     rings: [
-      { src: img('intro/speaker'),    l: 39,  t: 231, d: 155 },
-      { src: img('intro/library'),    l: 257, t: 204, d: 215 },
-      { src: img('intro/graduation'), l: 520, t: 244, d: 180 },
+      { src: img('intro/speaker'),    l: -117, t: 32,  d: 258 },
+      { src: img('intro/library'),    l: 85,   t: 284, d: 318 },
+      { src: img('intro/graduation'), l: 463,  t: 270, d: 229 },
     ],
   },
   vocarbit: {

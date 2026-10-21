@@ -66,13 +66,14 @@
   position: absolute;
   font-size: calc(15 * var(--u));         /* 20px */
   font-weight: 400;
-  line-height: calc(18.75 * var(--u));    /* 25px */
+  line-height: calc(24 * var(--u));       /* trước: 18.75 */
+  letter-spacing: 0.01em;                 /* thêm: chữ thoáng hơn */
 }
 
 /* đoạn intro nhỏ hơn: 18px / 23px */
 .textSm { 
   font-size: calc(13.5 * var(--u)); 
-  line-height: calc(17.25 * var(--u)); 
+  line-height: calc(22 * var(--u));       /* trước: 17.25 */
 }
 
 .pic { 
@@ -324,7 +325,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 12px;
+    gap: 16px;                        /* trước: 12px */
     padding: 20px;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.14);
@@ -348,8 +349,9 @@
     left: auto !important; top: auto !important;
     width: 100% !important;
     font-size: 15px;
-    line-height: 1.6;
-    margin: 4px 0;
+    line-height: 1.75;                /* trước: 1.6 */
+    letter-spacing: 0.01em;
+    margin: 8px 0;                    /* trước: 4px 0 */
   }
   .textSm {
     font-size: 14px;
@@ -404,8 +406,8 @@
   .nav { font-size: 17px; gap: 6px 16px; }
   .pill { height: 38px; padding: 0 14px; font-size: 15px; }
 
-  .content { padding: 16px; gap: 10px; }
-  .text { font-size: 14px; line-height: 1.55; }
+  .content { padding: 16px; gap: 14px; }          /* trước: 10px */
+  .text { font-size: 14px; line-height: 1.7; }    /* trước: 1.55 */
   .textSm { font-size: 13px; }
   
   .pic { height: 210px !important; width: calc(50% - 5px) !important; }
@@ -421,8 +423,8 @@
   .pills { gap: 8px; }
   .pill { height: 36px; padding: 0 12px; font-size: 14px; }
 
-  .content { padding: 14px; gap: 8px; border-radius: 14px; }
-  .text { font-size: 13px; line-height: 1.55; }
+  .content { padding: 14px; gap: 12px; border-radius: 14px; }
+  .text { font-size: 13px; line-height: 1.7; }
   .textSm { font-size: 12px; }
   
   .pic { height: 170px !important; width: calc(50% - 4px) !important; }
