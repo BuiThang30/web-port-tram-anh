@@ -37,10 +37,14 @@ const CONCERT_1 = `As Head of Content, Media and English MC for the “Viet Nam 
 
 const VIEWER_PAD = 60;
 const EXTRA = 28;
-const SHRINK: Tab[] = ['pantheon', 'concert'];
+/* essay được thêm vào để panel co lại theo nội dung (dải ảnh sát text) */
+const SHRINK: Tab[] = ['pantheon', 'concert', 'essay'];
+
+/* Vị trí top của dải ảnh ở tab essay (hệ toạ độ canvas). Giảm số này nếu muốn sát text hơn. */
+const ESSAY_STRIP_TOP = 265;
 
 const HEIGHT: Record<Tab, number> = {
-  intro: 810, press: 987, essay: 745.5, incense: 1559, pantheon: 810, concert: 810,
+  intro: 810, press: 987, essay: 810, incense: 1559, pantheon: 810, concert: 810,
 };
 
 const PANEL: Record<Tab, PanelRect> = {
@@ -151,7 +155,7 @@ function Slides({ srcs, box, interval = 4000 }: { srcs: string[]; box: Box; inte
   );
 }
 
-function Strip({ srcs }: { srcs: string[] }) {
+function Strip({ srcs, top }: { srcs: string[]; top?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
   const drag = useRef<{ x: number; s: number } | null>(null);
@@ -179,6 +183,7 @@ function Strip({ srcs }: { srcs: string[] }) {
     <div
       ref={ref}
       className={styles.strip}
+      style={top !== undefined ? { top } : undefined}
       onMouseEnter={() => (paused.current = true)}
       onMouseLeave={() => { paused.current = false; drag.current = null; }}
       onPointerDown={(e) => { drag.current = { x: e.clientX, s: ref.current?.scrollLeft ?? 0 }; }}
@@ -366,7 +371,7 @@ export default function CultureArtsPage() {
               </div>
             ))}
 
-            {tab === 'essay' && <Strip srcs={ESSAY_IMGS} />}
+            {tab === 'essay' && <Strip srcs={ESSAY_IMGS} top={ESSAY_STRIP_TOP} />}
 
             {tab === 'concert' && <Slides srcs={CONCERT_SLIDES} box={CONCERT_BOX} interval={CONCERT_INTERVAL} />}
 
