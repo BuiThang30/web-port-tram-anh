@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Rubik_Bubbles, Londrina_Solid } from 'next/font/google';
 import styles from './page.module.css';
 
@@ -9,10 +10,10 @@ export default function Home() {
   return (
     <div className={`${styles.wrap} ${rubik.variable} ${londrina.variable}`}>
       {/* Nền đại dương phủ kín toàn bộ chiều rộng/cao màn hình */}
-      <Image className={styles.bg} src="/image/background-home.png" alt="Background" fill priority />
+      <Image className={styles.bg} src="/image/background-home.png" alt="Background" fill sizes="100vw" priority />
       <div className={styles.overlay} />
 
-      {/* Khung nội dung (cá, nhãn, rương...) thu nhỏ còn 80% */}
+      {/* Khung nội dung (cá, nhãn, rương...) tự scale vừa trọn màn hình */}
       <div className={styles.home}>
 
         {/* Mũi tên nét đứt (vector) chỉ đường đi giữa các con cá */}
@@ -54,44 +55,44 @@ export default function Home() {
         </a>
 
         {/* CÁ 1: ABOUT ME */}
-        <a href="/about" className={styles.fishLink}>
+        <Link href="/about" className={styles.fishLink}>
           <div className={`${styles.fish} ${styles.ca1}`}>
             <Image src="/image/fish-about.png" alt="About Me" width={173} height={199} draggable={false} />
           </div>
           <p className={`${styles.label} ${styles.aboutMe}`}>ABOUT ME</p>
-        </a>
+        </Link>
 
         {/* CÁ 2: CULTURE & ARTS */}
-        <a href="/culture-arts" className={styles.fishLink}>
+        <Link href="/culture-arts" className={styles.fishLink}>
           <div className={`${styles.fish} ${styles.ca2}`}>
             <Image src="/image/fish-culture.png" alt="Culture & Arts" width={240} height={192} draggable={false} />
           </div>
           <p className={`${styles.label} ${styles.cultureArts}`}>CULTURE &amp; ARTS</p>
-        </a>
+        </Link>
 
         {/* CÁ 3: EDUCATION & PSYCHOLOGY */}
-        <a href="/education-psychology" className={styles.fishLink}>
+        <Link href="/education-psychology" className={styles.fishLink}>
           <div className={`${styles.fish} ${styles.ca3}`}>
             <Image src="/image/fish-education.png" alt="Education & Psychology" width={264} height={212} draggable={false} />
           </div>
           <p className={`${styles.label} ${styles.educationPsychology}`}>EDUCATION &amp; PSYCHOLOGY</p>
-        </a>
+        </Link>
 
         {/* CÁ 4: ECONOMICS */}
-        <a href="/economics" className={styles.fishLink}>
+        <Link href="/economics" className={styles.fishLink}>
           <div className={`${styles.fish} ${styles.ca4}`}>
             <Image src="/image/fish-economics.png" alt="Economics" width={380} height={245} draggable={false} />
           </div>
           <p className={`${styles.label} ${styles.economics}`}>ECONOMICS</p>
-        </a>
+        </Link>
 
         {/* CÁ 5: COMMUNITY SERVICE */}
-        <a href="/community-service" className={styles.fishLink}>
+        <Link href="/community-service" className={styles.fishLink}>
           <div className={`${styles.fish} ${styles.ca5}`}>
             <Image src="/image/shark-community.png" alt="Community Service" width={345} height={488} draggable={false} />
           </div>
           <p className={`${styles.label} ${styles.communityService}`}>COMMUNITY<br />SERVICE</p>
-        </a>
+        </Link>
       </div>
     </div>
   );

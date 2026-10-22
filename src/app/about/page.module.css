@@ -1,20 +1,28 @@
-/* Figma 1920x1080 -> thiết kế 1440x810 */
+/* =====================================================
+   Figma 1920x1080 -> thiết kế 1440x810.
+   --u = min(chiều rộng / 1440, chiều cao / 810)
+   => 1380, 1440, 1920 (2K), 2560, 3840 (4K)... đều vừa khít, không bị cắt,
+      không bị thừa khoảng trống (phần dư là nền, khung luôn căn giữa).
+   Màn nhỏ (< 1200px rộng hoặc < 620px cao) chuyển sang bố cục 1 cột.
+   ===================================================== */
 
 .about {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-content: var(--font-nexa), sans-serif;
-
-  /* = 1px khi màn >= 1440, nhỏ dần khi màn hẹp hơn */
-  --u: min(1px, calc(100vw / 1440));
+  --u: min(calc(100vw / 1440), calc(100dvh / 810));
 
   position: relative;
-  margin: 0 auto;
-  width: calc(1440 * var(--u));
-  height: calc(810 * var(--u));
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background: #464973;
   color: #fff;
   font-family: var(--font-content);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .about * {
@@ -23,9 +31,20 @@
   padding: 0;
 }
 
+/* Nền phủ kín toàn bộ màn hình */
 .bg {
   object-fit: cover;
   object-position: top center;
+  z-index: 0;
+}
+
+/* Khung thiết kế 1440x810 đã scale */
+.stage {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: calc(1440 * var(--u));
+  height: calc(810 * var(--u));
 }
 
 /* ===== Glass ===== */
@@ -34,7 +53,7 @@
   background: radial-gradient(50% 50% at 75% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
   -webkit-backdrop-filter: blur(calc(15.75 * var(--u)));
   backdrop-filter: blur(calc(15.75 * var(--u)));
-  border-radius: var(--r, calc(500 * var(--u)));
+  border-radius: var(--r, 500px);
 }
 
 .glass::before {
@@ -203,6 +222,7 @@
   font-size: calc(22.5 * var(--u));
   font-weight: 400;
   color: #fff;
+  white-space: nowrap;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
@@ -222,49 +242,30 @@
   .panel, .pill, .nav a { transition: none; }
 }
 
+
 /* =====================================================
-   RESPONSIVE (viết từ lớn xuống nhỏ)
+   MÀN NHỎ / THẤP: bố cục 1 cột, cuộn dọc.
+   Áp dụng khi KHÔNG đủ chỗ cho khung 1440x810 scale
+   (rộng < 1200px hoặc cao < 620px).
    ===================================================== */
-
-/* ---------- < 1440: giữ bố cục desktop, co theo màn hình ---------- */
-@media (max-width: 1439px) {
-  .about { --u: calc(100vw / 1440); }
-}
-
-/* ---------- < 1200: laptop nhỏ, chữ có cỡ tối thiểu ---------- */
-@media (max-width: 1199px) {
-  .text {
-    font-size: max(11px, calc(15 * var(--u)));
-    line-height: 1.55;                /* trước: 1.25 */
-  }
-  .crumb { font-size: max(11px, calc(13.5 * var(--u))); }
-  .nav { font-size: max(18px, calc(30 * var(--u))); line-height: 1.2; }
-  .pill { font-size: max(14px, calc(22.5 * var(--u))); }
-}
-
-/* ---------- < 1024: tablet, bỏ toạ độ, xếp 1 cột ---------- */
-@media (max-width: 1023px) {
+@media not all and (min-width: 1200px) and (min-height: 620px) {
   .about {
     --u: 1px;
-    width: 100%;
-    max-width: 760px;
-    height: auto;
-    min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
     gap: 18px;
-    padding: 24px;
-    overflow: visible;
+    padding: 24px max(24px, calc((100% - 860px) / 2));
   }
 
-  /* nền phủ cả trang (bg là <img fill> nên absolute theo .about) */
-  .bg { z-index: 0; }
+  .stage { display: contents; }
 
   .panel { display: none; }
 
   .crumb {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     order: 1;
     left: auto;
     top: auto;
@@ -277,7 +278,7 @@
 
   .nav {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     order: 2;
     left: auto;
     top: auto;
@@ -294,7 +295,7 @@
 
   .pills {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     order: 3;
     left: auto;
     top: auto;
@@ -307,17 +308,18 @@
     height: 40px;
     padding: 0 18px;
     font-size: 16px;
+    white-space: normal;
   }
 
   .content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     order: 4;
     inset: auto;
     pointer-events: auto;
     display: flex;
     flex-direction: column;
-    gap: 26px;                        /* trước: 20px */
+    gap: 26px;
     padding: 22px;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.14);
@@ -340,7 +342,7 @@
     width: auto !important;
     order: 2;
     font-size: 15px;
-    line-height: 1.75;                /* trước: 1.6 */
+    line-height: 1.75;
     letter-spacing: 0.01em;
   }
 
@@ -411,9 +413,9 @@
   .nav { font-size: 17px; gap: 6px 16px; }
   .pill { height: 38px; padding: 0 14px; font-size: 15px; }
 
-  .content { padding: 16px; gap: 22px; }   /* trước: 16px */
+  .content { padding: 16px; gap: 22px; }
   .title { font-size: 20px; }
-  .text { font-size: 14px; line-height: 1.7; }   /* trước: 1.55 */
+  .text { font-size: 14px; line-height: 1.7; }
 
   .ring {
     width: 160px !important;
@@ -448,9 +450,9 @@
   .pills { gap: 8px; }
   .pill { height: 36px; padding: 0 12px; font-size: 14px; }
 
-  .content { padding: 14px; gap: 18px; border-radius: 14px; }   /* trước: gap 14px */
+  .content { padding: 14px; gap: 18px; border-radius: 14px; }
   .title { font-size: 18px; }
-  .text { font-size: 13px; line-height: 1.7; }   /* trước: 1.55 */
+  .text { font-size: 13px; line-height: 1.7; }
 
   .group { gap: 10px; }
 

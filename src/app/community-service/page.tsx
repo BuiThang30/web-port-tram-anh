@@ -24,7 +24,7 @@ type PanelRect = { left: number; top: number; width: number; height: number };
 /* đổi số thiết kế (px trên khung 1440) thành giá trị co giãn theo màn hình */
 const u = (n: number) => `calc(${n} * var(--u))`;
 
-/* --o: thứ tự hiển thị trên mobile, lấy theo toạ độ top của thiết kế */
+/* --o: thứ tự hiển thị trên màn nhỏ (1 cột), lấy theo toạ độ top của thiết kế */
 const ord = (t: number, isText = false): CSSProperties =>
   ({ '--o': Math.round(isText ? t - 5 : t) }) as CSSProperties;
 
@@ -126,103 +126,119 @@ export default function CommunityServicePage() {
   return (
     <main
       className={`${styles.page} ${rubik.variable} ${nexa.variable}`}
-      style={{ height: u(HEIGHT[tab]), '--h': HEIGHT[tab] } as CSSProperties}
+      style={{ '--h': HEIGHT[tab] } as CSSProperties}
     >
-      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
+      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="100vw" priority />
 
-      {/* canvas: toàn bộ khung kính + nội dung, giữ nguyên toạ độ Figma */}
-      <div className={styles.canvas}>
-        <div
-          className={`${styles.glass} ${styles.panel}`}
-          style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }}
-        />
+      {/* .stage = khung thiết kế 1440 x --h, tự scale theo bề ngang màn hình */}
+      <div className={styles.stage}>
+        <div className={styles.canvas}>
+          <div
+            className={`${styles.glass} ${styles.panel}`}
+            style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }}
+          />
 
-        <div key={tab} className={styles.content}>
-          {C.texts.map((t) => (
-            <p
-              key={t.text}
-              className={styles.text}
-              style={{ left: u(t.l), top: u(t.t), width: u(t.w), ...ord(t.t, true) }}
-            >
-              {t.text}
-            </p>
-          ))}
-
-          <div className={styles.group}>
-            {C.pics.map((p) => (
-              <div
-                key={p.src}
-                className={`${styles.pic} ${p.free ? styles.free : ''}`}
-                style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+          <div key={tab} className={styles.content}>
+            {C.texts.map((t) => (
+              <p
+                key={t.text}
+                className={styles.text}
+                style={{ left: u(t.l), top: u(t.t), width: u(t.w), ...ord(t.t, true) }}
               >
-                <Image
-                  className={p.free ? styles.contain : styles.cover}
-                  src={p.src}
-                  alt=""
-                  fill
-                  sizes={`${Math.round(p.w)}px`}
-                />
-              </div>
+                {t.text}
+              </p>
             ))}
 
-            {C.rings.map((r) => (
-              <div
-                key={r.src}
-                className={`${styles.glass} ${styles.ring}`}
-                style={{ left: u(r.l), top: u(r.t), width: u(r.d), height: u(r.d), ...ord(r.t) }}
-              >
-                <div className={styles.ringInner}>
-                  <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
+            <div className={styles.group}>
+              {C.pics.map((p) => (
+                <div
+                  key={p.src}
+                  className={`${styles.pic} ${p.free ? styles.free : ''}`}
+                  style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+                >
+                  <Image
+                    className={p.free ? styles.contain : styles.cover}
+                    src={p.src}
+                    alt=""
+                    fill
+                    sizes="(max-width: 1199px) 50vw, 45vw"
+                  />
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
 
-          {tab === 'voice' && (
-            <>
-              <h3 className={styles.recapTitle} style={ord(679.5)}>My Recap Collection</h3>
-              <div className={`${styles.group} ${styles.recap}`}>
-                {RECAP.map((p) => (
-                  <div
-                    key={p.src}
-                    className={styles.pic}
-                    style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
-                  >
-                    <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
+              {C.rings.map((r) => (
+                <div
+                  key={r.src}
+                  className={`${styles.glass} ${styles.ring}`}
+                  style={{ left: u(r.l), top: u(r.t), width: u(r.d), height: u(r.d), ...ord(r.t) }}
+                >
+                  <div className={styles.ringInner}>
+                    <Image className={styles.cover} src={r.src} alt="" fill sizes="(max-width: 1199px) 200px, 20vw" />
                   </div>
-                ))}
-              </div>
-            </>
-          )}
+                </div>
+              ))}
+            </div>
+
+            {tab === 'voice' && (
+              <>
+                <h3 className={styles.recapTitle} style={ord(679.5)}>My Recap Collection</h3>
+                <div className={`${styles.group} ${styles.recap}`}>
+                  {RECAP.map((p) => (
+                    <div
+                      key={p.src}
+                      className={styles.pic}
+                      style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+                    >
+                      <Image className={styles.cover} src={p.src} alt="" fill sizes="(max-width: 1199px) 50vw, 35vw" />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className={`${styles.glass} ${styles.crumb}`}>
-        <Link href="/">Homepage</Link>
-        <span>&gt;</span>
-        <span>Community Service</span>
-      </div>
+        <div className={`${styles.glass} ${styles.crumb}`}>
+          <Link href="/">Homepage</Link>
+          <span>&gt;</span>
+          <span>Community Service</span>
+        </div>
 
-      <nav className={styles.nav}>
-        {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>
-            {n.label}
-          </Link>
-        ))}
-      </nav>
+        <nav className={styles.nav}>
+          {NAV.map((n) => (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={n.active ? styles.navActive : undefined}
+              /* Đang ở trang này mà bấm lại => không điều hướng, chỉ quay về tab intro */
+              onClick={
+                n.active
+                  ? (e) => {
+                      e.preventDefault();
+                      setTab('intro');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  : undefined
+              }
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
 
-      <div className={styles.pills}>
-        {PILLS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            aria-pressed={tab === p.id}
-            className={`${styles.glass} ${styles.pill} ${p.wrap ? styles.pillWrap : ''} ${tab === p.id ? styles.pillActive : ''}`}
-            onClick={() => toggleTab(p.id)}
-          >
-            {p.label}
-          </button>
-        ))}
+        <div className={styles.pills}>
+          {PILLS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-pressed={tab === p.id}
+              className={`${styles.glass} ${styles.pill} ${p.wrap ? styles.pillWrap : ''} ${tab === p.id ? styles.pillActive : ''}`}
+              onClick={() => toggleTab(p.id)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
       </div>
     </main>
   );

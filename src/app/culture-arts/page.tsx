@@ -148,7 +148,7 @@ function Slides({ srcs, box, interval = 4000 }: { srcs: string[]; box: Box; inte
           src={s}
           alt=""
           fill
-          sizes={`${Math.round(box.w)}px`}
+          sizes="(max-width: 1199px) 70vw, 40vw"
         />
       ))}
     </div>
@@ -252,16 +252,26 @@ function Viewer({ sub, top, arrowTop, onHeight }: { sub: Sub; top: number; arrow
   );
 }
 
+/* Vùng nội dung bên phải (tablet / mobile): từ x = 657.75 đến 1450 (gồm cả vòng tròn lòi ra ngoài panel) */
 const DESIGN_X0 = 657.75;
-const DESIGN_W = 1420 - DESIGN_X0;
+const DESIGN_W = 1450 - DESIGN_X0;
 
+/* Mốc phải khớp với media query trong CSS: >= 1200 desktop, 1024-1199 tablet 2 cột, < 1024 1 cột */
 function useFit() {
   const [fit, setFit] = useState({ s: 1, cx: -DESIGN_X0, left: 300 });
 
   useEffect(() => {
     const calc = () => {
-      const w = document.documentElement.clientWidth;
-      const wide = w >= 1024;
+      const iw = window.innerWidth;                       // dùng để chọn mốc (khớp media query)
+      const w = document.documentElement.clientWidth;     // bề rộng thực (đã trừ thanh cuộn)
+
+      /* Desktop: scale nguyên khung thiết kế 1440 theo bề ngang màn hình (1920, 2K, 4K... đều vừa) */
+      if (iw >= 1200) {
+        setFit({ s: w / 1440, cx: 0, left: 300 });
+        return;
+      }
+
+      const wide = iw >= 1024;
       const pad = wide ? 24 : 16;
       const left = Math.min(400, Math.max(250, w * 0.26));
       const colW = wide ? w - pad * 2 - left - 24 : w - pad * 2;
@@ -331,7 +341,6 @@ export default function CultureArtsPage() {
   const arrowTop = panel.top + panel.height / 2 - 11;
 
   const vars = {
-    height: pageH,
     '--h': pageH,
     '--s': fit.s,
     '--cx': `${fit.cx}px`,
@@ -340,103 +349,125 @@ export default function CultureArtsPage() {
 
   return (
     <main className={`${styles.page} ${rubik.variable} ${nexa.variable}`} style={vars}>
-      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
+      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="100vw" priority />
 
-      <div className={styles.stage}>
-        <div className={styles.canvas}>
-          <div className={`${styles.glass} ${styles.panel} ${sub ? styles.dark : ''}`} style={panel} />
+      {/* .scaler giữ chỗ theo chiều cao đã scale; .frame là khung thiết kế 1440 x pageH bị scale */}
+      <div className={styles.scaler}>
+        <div className={styles.frame}>
+          <div className={styles.stage}>
+            <div className={styles.canvas}>
+              <div className={`${styles.glass} ${styles.panel} ${sub ? styles.dark : ''}`} style={panel} />
 
-          <div key={tab + (sub?.key ?? '')} ref={contentRef} className={styles.content}>
-            {C?.texts.map((t) => {
-              const style = { left: t.l, top: t.t, width: t.w };
-              const cls = `${styles.text} ${t.center ? styles.center : ''}`;
-              return t.href ? (
-                <a key={t.text} className={`${cls} ${styles.caption}`} style={style} href={t.href} target="_blank" rel="noreferrer">{t.text}</a>
-              ) : (
-                <p key={t.text} className={cls} style={style}>{t.text}</p>
-              );
-            })}
+              <div key={tab + (sub?.key ?? '')} ref={contentRef} className={styles.content}>
+                {C?.texts.map((t) => {
+                  const style = { left: t.l, top: t.t, width: t.w };
+                  const cls = `${styles.text} ${t.center ? styles.center : ''}`;
+                  return t.href ? (
+                    <a key={t.text} className={`${cls} ${styles.caption}`} style={style} href={t.href} target="_blank" rel="noreferrer">{t.text}</a>
+                  ) : (
+                    <p key={t.text} className={cls} style={style}>{t.text}</p>
+                  );
+                })}
 
-            {C?.pics.map((p) => (
-              <div key={p.src} className={`${styles.pic} ${p.round ? styles.round : ''}`} style={{ left: p.l, top: p.t, width: p.w, height: p.h, zIndex: p.z ?? 1 }}>
-                <Image className={p.round ? styles.cover : styles.contain} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
-              </div>
-            ))}
+                {C?.pics.map((p) => (
+                  <div key={p.src} className={`${styles.pic} ${p.round ? styles.round : ''}`} style={{ left: p.l, top: p.t, width: p.w, height: p.h, zIndex: p.z ?? 1 }}>
+                    <Image className={p.round ? styles.cover : styles.contain} src={p.src} alt="" fill sizes="(max-width: 1199px) 70vw, 50vw" />
+                  </div>
+                ))}
 
-            {C?.rings.map((r) => (
-              <div key={r.src} className={`${styles.glass} ${styles.ring}`} style={{ left: r.l, top: r.t, width: r.d, height: r.d, zIndex: r.z ?? 2 }}>
-                <div className={styles.ringInner}>
-                  <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
-                </div>
-              </div>
-            ))}
-
-            {tab === 'essay' && <Strip srcs={ESSAY_IMGS} top={ESSAY_STRIP_TOP} />}
-
-            {tab === 'concert' && <Slides srcs={CONCERT_SLIDES} box={CONCERT_BOX} interval={CONCERT_INTERVAL} />}
-
-            {tab === 'incense' && (
-              <>
-                <iframe
-                  className={styles.video}
-                  src="https://www.youtube.com/embed/MFxD5XiWAeY"
-                  title="Quang Phu Cau - the story of a traditional incense village"
-                  loading="lazy"
-                  allowFullScreen
-                />
-                <h3 className={styles.recapTitle}>My Recap Collection</h3>
-                <div className={styles.recap}>
-                  {RECAP_IMGS.map((s) => (
-                    <div key={s} className={styles.recapItem}>
-                      <Image className={styles.cover} src={s} alt="" fill sizes="320px" />
+                {C?.rings.map((r) => (
+                  <div key={r.src} className={`${styles.glass} ${styles.ring}`} style={{ left: r.l, top: r.t, width: r.d, height: r.d, zIndex: r.z ?? 2 }}>
+                    <div className={styles.ringInner}>
+                      <Image className={styles.cover} src={r.src} alt="" fill sizes="(max-width: 1199px) 30vw, 20vw" />
                     </div>
-                  ))}
-                </div>
-              </>
-            )}
+                  </div>
+                ))}
 
-            {sub && <Viewer key={sub.key} sub={sub} top={slideTop} arrowTop={arrowTop} onHeight={setSlideH} />}
+                {tab === 'essay' && <Strip srcs={ESSAY_IMGS} top={ESSAY_STRIP_TOP} />}
+
+                {tab === 'concert' && <Slides srcs={CONCERT_SLIDES} box={CONCERT_BOX} interval={CONCERT_INTERVAL} />}
+
+                {tab === 'incense' && (
+                  <>
+                    <iframe
+                      className={styles.video}
+                      src="https://www.youtube.com/embed/MFxD5XiWAeY"
+                      title="Quang Phu Cau - the story of a traditional incense village"
+                      loading="lazy"
+                      allowFullScreen
+                    />
+                    <h3 className={styles.recapTitle}>My Recap Collection</h3>
+                    <div className={styles.recap}>
+                      {RECAP_IMGS.map((s) => (
+                        <div key={s} className={styles.recapItem}>
+                          <Image className={styles.cover} src={s} alt="" fill sizes="(max-width: 1199px) 40vw, 25vw" />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {sub && <Viewer key={sub.key} sub={sub} top={slideTop} arrowTop={arrowTop} onHeight={setSlideH} />}
+              </div>
+
+              {tab === 'pantheon' &&
+                SUBS.map((s) => (
+                  <button
+                    key={s.key}
+                    type="button"
+                    className={`${styles.sub} ${subKey === s.key ? styles.subOn : ''}`}
+                    style={{ left: s.left, top: s.top }}
+                    onClick={() => toggleSub(s.key)}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+            </div>
           </div>
 
-          {tab === 'pantheon' &&
-            SUBS.map((s) => (
-              <button
-                key={s.key}
-                type="button"
-                className={`${styles.sub} ${subKey === s.key ? styles.subOn : ''}`}
-                style={{ left: s.left, top: s.top }}
-                onClick={() => toggleSub(s.key)}
+          <div className={`${styles.glass} ${styles.crumb}`}>
+            <Link href="/">Homepage</Link>
+            <span>&gt;</span>
+            <span>Culture and Arts</span>
+          </div>
+
+          <nav className={styles.nav}>
+            {NAV.map((n) => (
+              <Link
+                key={n.href}
+                href={n.href}
+                className={n.active ? styles.navActive : undefined}
+                /* Đang ở trang này mà bấm lại => không điều hướng, chỉ quay về tab intro */
+                onClick={
+                  n.active
+                    ? (e) => {
+                        e.preventDefault();
+                        setTab('intro');
+                        setSubKey(null);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    : undefined
+                }
               >
-                {s.label}
+                {n.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className={styles.pills}>
+            {PILLS.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                aria-pressed={tab === p.id}
+                className={`${styles.glass} ${styles.pill} ${tab === p.id ? styles.pillActive : ''}`}
+                onClick={() => toggleTab(p.id)}
+              >
+                {p.label}
               </button>
             ))}
+          </div>
         </div>
-      </div>
-
-      <div className={`${styles.glass} ${styles.crumb}`}>
-        <Link href="/">Homepage</Link>
-        <span>&gt;</span>
-        <span>Culture and Arts</span>
-      </div>
-
-      <nav className={styles.nav}>
-        {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>{n.label}</Link>
-        ))}
-      </nav>
-
-      <div className={styles.pills}>
-        {PILLS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            aria-pressed={tab === p.id}
-            className={`${styles.glass} ${styles.pill} ${tab === p.id ? styles.pillActive : ''}`}
-            onClick={() => toggleTab(p.id)}
-          >
-            {p.label}
-          </button>
-        ))}
       </div>
     </main>
   );

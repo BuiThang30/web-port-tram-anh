@@ -1,21 +1,30 @@
-/* Container bao bọc toàn màn hình */
+/* =====================================================
+   Khung thiết kế Figma: 1920 x 1080 (vị trí giãn theo --kx, --ky).
+
+   Desktop / laptop / 2K / 4K:
+     --s tự tính để TOÀN BỘ khung (cá, nhãn, rương, khung chữ) luôn nằm
+     trọn trong màn hình: không bị cắt, và lớn dần theo màn hình.
+   Màn dọc / điện thoại / màn quá thấp:
+     chuyển sang bố cục lưới 2 cột, cuộn dọc, ẩn vector.
+   ===================================================== */
+
 .wrap {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-londrina: var(--font-londrina-solid), sans-serif;
 
-  /* Khung thiết kế Figma: 1920 x 1080 */
-  --scale: 0.8;  /* kích thước các con cá, chữ, rương... (80%) */
   --kx: 1.2;     /* độ giãn khoảng cách theo chiều ngang (1 = như Figma) */
   --ky: 1.15;    /* độ giãn khoảng cách theo chiều dọc */
 
-  --s: calc(min(max(calc(100vw / 1920), calc(100vh / 1080)), calc(100vh / 1010)) * var(--scale));
-  --u: var(--s);                   /* đơn vị cho KÍCH THƯỚC */
+  /* Vừa khít cả chiều ngang lẫn chiều dọc (chừa thêm 60 đơn vị dọc cho rương + ánh sáng) */
+  --s: min(calc(100vw / (1920 * var(--kx))), calc(100dvh / (1080 * var(--ky) + 60)));
+  --u: var(--s);                    /* đơn vị cho KÍCH THƯỚC */
   --ux: calc(var(--s) * var(--kx)); /* đơn vị cho VỊ TRÍ ngang */
   --uy: calc(var(--s) * var(--ky)); /* đơn vị cho VỊ TRÍ dọc */
 
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -279,3 +288,108 @@
 
 .fishLink { display: contents; }
 .fishLink:hover .fish { opacity: 0.7; transform: scale(1.05); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fish { transition: none; }
+  .khoBauWrap:hover .khoImgOpen,
+  .khoBauWrap:hover .chestGlow,
+  .khoBauWrap:hover .spark { animation: none; }
+}
+
+
+/* =====================================================
+   MÀN DỌC / ĐIỆN THOẠI / MÀN QUÁ THẤP: lưới 2 cột, cuộn dọc.
+   - rộng <= 767px
+   - màn dọc (tỉ lệ rộng/cao <= 4/5) và rộng <= 1100px (tablet đứng)
+   - cao <= 480px (điện thoại nằm ngang)
+   ===================================================== */
+@media (max-width: 767px),
+       (max-aspect-ratio: 4/5) and (max-width: 1100px),
+       (max-height: 480px) {
+  .wrap {
+    /* --u chỉ còn dùng để vẽ rương: 1 đơn vị = chiều rộng rương / 485 */
+    --chest: min(68vw, 250px);
+    --u: calc(var(--chest) / 485);
+    display: block;
+    height: auto;
+    overflow: hidden;
+  }
+
+  .wrap > .home {
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 16px;
+    align-items: start;
+    justify-items: center;
+  }
+
+  /* Ẩn mũi tên nét đứt. Phải là .wrap .vector (độ ưu tiên cao hơn .wrap img { display:block }) */
+  .wrap .vector {
+    display: none;
+  }
+
+  .box2 {
+    position: relative;
+    translate: none;
+    left: auto; top: auto;
+    order: -1;
+    grid-column: 1 / -1;
+    width: 100%;
+    height: auto;
+    padding: 18px 22px;
+    border-radius: 36px;
+    border-width: 2px;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  .clickTheFishYou {
+    width: 100%;
+    font-size: clamp(15px, 4.6vw, 22px);
+    line-height: 1.35;
+  }
+
+  .fishLink {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  /* cá thứ 5 đứng giữa hàng cuối */
+  .fishLink:last-of-type {
+    grid-column: 1 / -1;
+    width: calc(50% - 8px);
+  }
+
+  .fish {
+    position: relative;
+    translate: none;
+    left: auto; top: auto;
+    width: 100%;
+    height: clamp(120px, 34vw, 190px);
+  }
+
+  .label {
+    position: static;
+    translate: none;
+    width: auto;
+    font-size: clamp(14px, 4vw, 20px);
+    line-height: 1.2;
+  }
+
+  .khoBauWrap {
+    position: relative;
+    translate: none;
+    left: auto; top: auto;
+    grid-column: 1 / -1;
+    order: 10;
+    margin-top: 12px;
+  }
+}

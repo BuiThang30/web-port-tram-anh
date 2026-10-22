@@ -1,25 +1,44 @@
-/* Figma 1920x1080 -> code 1440x810 (mọi số px đã nhân 0.75) */
+/* =====================================================
+   Thiết kế gốc: 1440 x 810.
+   --u = 1 "đơn vị thiết kế", tự scale theo màn hình:
+     --u = min(chiều rộng / 1440, chiều cao / 810)
+   => 1380, 1440, 1920 (2K), 2560, 3840 (4K)... đều vừa khít, không bị cắt,
+      không bị thừa khoảng trống (phần dư là nền, khung luôn căn giữa).
+   Màn nhỏ (< 1200px rộng hoặc < 620px cao) chuyển sang bố cục 1 cột.
+   ===================================================== */
 
 .page {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-content: var(--font-nexa), sans-serif;
-  --u: 1px;
+  --u: min(calc(100vw / 1440), calc(100dvh / 810));
 
   position: relative;
-  margin: 0 auto;
-  width: 1440px;
-  height: 810px;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background: #464973;
   color: #fff;
   font-family: var(--font-content);
-  transition: height 0.35s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .page * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Nền: rộng full 1440px, cắt từ TRÊN xuống hết chiều cao trang */
+/* Nền phủ kín toàn bộ màn hình */
 .bg { object-fit: cover; object-position: top center; z-index: 0; }
+
+/* Khung thiết kế 1440x810 đã scale */
+.stage {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: calc(1440 * var(--u));
+  height: calc(810 * var(--u));
+}
 
 .canvas { display: contents; }
 
@@ -27,8 +46,8 @@
 .glass {
   position: relative;
   background: radial-gradient(50% 50% at 75% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
-  -webkit-backdrop-filter: blur(15.75px);
-  backdrop-filter: blur(15.75px);
+  -webkit-backdrop-filter: blur(calc(15.75 * var(--u)));
+  backdrop-filter: blur(calc(15.75 * var(--u)));
   border-radius: var(--r, 500px);
 }
 
@@ -36,7 +55,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  padding: 2.25px;
+  padding: calc(2.25 * var(--u));
   border-radius: inherit;
   background: linear-gradient(115deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -64,37 +83,34 @@
 
 .text {
   position: absolute;
-  font-size: calc(15 * var(--u));         /* 20px */
+  font-size: calc(15 * var(--u));
   font-weight: 400;
-  line-height: calc(24 * var(--u));       /* trước: 18.75 */
-  letter-spacing: 0.01em;                 /* thêm: chữ thoáng hơn */
+  line-height: calc(24 * var(--u));
+  letter-spacing: 0.01em;
 }
 
-/* đoạn intro nhỏ hơn: 18px / 23px */
-.textSm { 
-  font-size: calc(13.5 * var(--u)); 
-  line-height: calc(22 * var(--u));       /* trước: 17.25 */
+.textSm {
+  font-size: calc(13.5 * var(--u));
+  line-height: calc(22 * var(--u));
 }
 
-.pic { 
-  position: absolute; 
-  border-radius: calc(12 * var(--u)); 
-  overflow: hidden; 
+.pic {
+  position: absolute;
+  border-radius: calc(12 * var(--u));
+  overflow: hidden;
 }
 .cover { object-fit: cover; }
 
-.ring { 
-  position: absolute; 
-  padding: calc(7.5 * var(--u)); 
-  border-radius: 50%; 
+.ring {
+  position: absolute;
+  padding: calc(7.5 * var(--u));
+  border-radius: 50%;
 }
 .ringInner { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
 
 /* ===== Nút My Website ===== */
 .btn {
   position: absolute;
-  left: calc(947.25 * var(--u));
-  top: calc(542.25 * var(--u));
   height: calc(39 * var(--u));
   padding: 0 calc(17 * var(--u));
   display: inline-flex;
@@ -109,15 +125,13 @@
   transition: transform 0.2s ease;
 }
 
+.btn svg { width: calc(21 * var(--u)); height: calc(12 * var(--u)); }
+
 .btn:hover { transform: translateY(-2px); }
 
 /* ===== PAX: dải ảnh tự chạy ngang ===== */
 .strip {
   position: absolute;
-  left: calc(683.25 * var(--u));
-  top: calc(259.5 * var(--u));
-  width: calc(689.25 * var(--u));
-  height: calc(267 * var(--u));
   display: flex;
   gap: calc(7.5 * var(--u));
   overflow-x: auto;
@@ -132,7 +146,7 @@
 .stripImg {
   flex: none;
   width: auto;
-  height: calc(267 * var(--u));
+  height: 100%;
   border-radius: calc(13.5 * var(--u));
   object-fit: cover;
   user-select: none;
@@ -141,16 +155,16 @@
 /* ===== Breadcrumb ===== */
 .crumb {
   position: absolute;
-  left: 75px;
-  top: 32.25px;
-  height: 28.5px;
-  padding: 0 15px;
+  left: calc(75 * var(--u));
+  top: calc(32.25 * var(--u));
+  height: calc(28.5 * var(--u));
+  padding: 0 calc(15 * var(--u));
   display: inline-flex;
   align-items: center;
-  gap: 4.5px;
-  --r: 15px;
+  gap: calc(4.5 * var(--u));
+  --r: calc(15 * var(--u));
   font-family: var(--font-bubbles);
-  font-size: 13.5px;
+  font-size: calc(13.5 * var(--u));
   white-space: nowrap;
 }
 
@@ -159,16 +173,16 @@
 /* ===== Menu trái ===== */
 .nav {
   position: absolute;
-  left: 75px;
-  top: 82.5px;
-  width: 345px;
+  left: calc(75 * var(--u));
+  top: calc(82.5 * var(--u));
+  width: calc(345 * var(--u));
   display: flex;
   flex-direction: column;
-  gap: 19.5px;
+  gap: calc(19.5 * var(--u));
   font-family: var(--font-bubbles);
-  font-size: 30px;
+  font-size: calc(30 * var(--u));
   font-weight: 400;
-  line-height: 35.25px;
+  line-height: calc(35.25 * var(--u));
   text-transform: uppercase;
 }
 
@@ -179,22 +193,22 @@
 /* ===== 4 nút ===== */
 .pills {
   position: absolute;
-  left: 75px;
-  top: 522px;
+  left: calc(75 * var(--u));
+  top: calc(522 * var(--u));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 18.75px;
+  gap: calc(18.75 * var(--u));
 }
 
 .pill {
-  height: 45px;
-  padding: 0 22.5px;
+  height: calc(45 * var(--u));
+  padding: 0 calc(22.5 * var(--u));
   display: flex;
   align-items: center;
   border: none;
   font-family: var(--font-bubbles);
-  font-size: 22.5px;
+  font-size: calc(22.5 * var(--u));
   font-weight: 400;
   color: #fff;
   white-space: nowrap;
@@ -218,114 +232,76 @@
 
 
 /* =====================================================
-   1024px -> 1439px: Thu hẹp menu trái, thu phóng UI phải
+   MÀN NHỎ / THẤP: bố cục 1 cột, cuộn dọc.
+   Áp dụng khi KHÔNG đủ chỗ cho khung 1440x810 scale
+   (rộng < 1200px hoặc cao < 620px).
    ===================================================== */
-@media (max-width: 1439px) {
+@media not all and (min-width: 1200px) and (min-height: 620px) {
   .page {
-    --left: clamp(250px, 24vw, 340px);
-    --pad: 24px;
-    --u: calc((100vw - var(--left) - 2 * var(--pad)) / 888);
-
-    width: 100%;
-    height: auto !important; 
-    /* Dùng biến --h (nếu trang đổi height theo tab) hoặc cố định 810 */
-    min-height: calc((var(--h, 810) - 33) * var(--u) + 2 * var(--pad));
+    --u: 1px;
     display: grid;
-    grid-template-columns: var(--left) minmax(0, 1fr);
-    grid-template-rows: auto auto auto 1fr;
+    grid-template-columns: minmax(0, 860px);
+    grid-template-rows: auto;
+    justify-content: center;
     align-content: start;
-    padding: var(--pad);
+    align-items: start;
+    row-gap: 16px;
+    padding: 20px;
   }
 
-  .canvas {
-    display: block;
-    position: absolute;
-    z-index: 1;
-    left: calc(var(--pad) + var(--left) - 493.5 * var(--u));
-    top: calc(var(--pad) - 33 * var(--u));
-    width: calc(1440 * var(--u));
-    height: calc(var(--h, 810) * var(--u));
-    pointer-events: none;
+  .stage { display: contents; }
+  .canvas { display: contents; }
+  .panel { display: none; }
+
+  .crumb,
+  .nav,
+  .pills,
+  .content {
+    position: relative;
+    z-index: 2;
+    left: auto;
+    top: auto;
   }
 
   .crumb {
-    position: relative; z-index: 2;
     grid-column: 1; grid-row: 1;
     justify-self: start;
-    left: auto; top: auto;
     height: 28px; padding: 0 14px;
     font-size: 13px; --r: 14px;
   }
 
   .nav {
-    position: relative; z-index: 2;
     grid-column: 1; grid-row: 2;
-    left: auto; top: auto; width: auto;
-    margin-top: 22px;
-    gap: 14px;
-    font-size: clamp(18px, 1.9vw, 26px);
-    line-height: 1.2;
-  }
-  .nav a { color: rgba(255, 255, 255, 0.45); }
-  .nav a.navActive { color: #fff; }
-
-  .pills {
-    position: relative; z-index: 2;
-    grid-column: 1; grid-row: 3;
-    left: auto; top: auto;
-    margin-top: 36px;
-    gap: 12px;
-  }
-  .pill { height: 42px; padding: 0 18px; font-size: clamp(14px, 1.45vw, 18px); }
-}
-
-
-/* =====================================================
-   < 1024px: Bố cục 1 cột. Tái sắp xếp order qua --o
-   ===================================================== */
-@media (max-width: 1023px) {
-  .page {
-    --u: 1px;
-    max-width: 760px;
-    min-height: 100dvh;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
-    row-gap: 16px;
-    padding: 20px;
-  }
-
-  .canvas { display: contents; }
-  .panel { display: none; }
-
-  .crumb { grid-column: 1; grid-row: 1; }
-
-  .nav {
-    grid-column: 1; grid-row: 2;
-    margin-top: 0;
+    width: auto;
     flex-direction: row; flex-wrap: wrap;
-    gap: 8px 20px; font-size: 19px;
+    gap: 8px 20px;
+    font-size: 19px;
+    line-height: 1.25;
   }
   .nav a { color: rgba(255, 255, 255, 0.7); }
   .nav a.navActive { color: #fff; }
 
   .pills {
     grid-column: 1; grid-row: 3;
-    margin-top: 0;
     flex-direction: row; flex-wrap: wrap;
     gap: 10px;
   }
-  .pill { height: 40px; font-size: 16px; }
+  .pill {
+    height: 40px; padding: 0 18px;
+    font-size: 16px;
+    white-space: normal;
+    text-align: left;
+  }
 
-  /* Thẻ nội dung bọc lại thành Flexbox Wrap để dùng --o */
+  /* Khối nội dung: flex wrap, sắp theo thứ tự --o */
   .content {
-    position: relative; z-index: 2;
     grid-column: 1; grid-row: 4;
     inset: auto;
     pointer-events: auto;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 16px;                        /* trước: 12px */
+    gap: 16px;
     padding: 20px;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.14);
@@ -334,7 +310,6 @@
     backdrop-filter: blur(12px);
   }
 
-  /* Gán order động để tự động sắp xếp các phần tử từ trên xuống dưới */
   .text,
   .pic,
   .ring,
@@ -343,30 +318,25 @@
     order: var(--o, 0);
   }
 
-  /* Định dạng lại khối Text */
   .text {
     position: static !important;
     left: auto !important; top: auto !important;
     width: 100% !important;
     font-size: 15px;
-    line-height: 1.75;                /* trước: 1.6 */
+    line-height: 1.75;
     letter-spacing: 0.01em;
-    margin: 8px 0;                    /* trước: 4px 0 */
+    margin: 8px 0;
   }
-  .textSm {
-    font-size: 14px;
-  }
+  .textSm { font-size: 14px; }
 
-  /* Khung Ảnh */
   .pic {
     position: relative !important;
     left: auto !important; top: auto !important;
-    width: calc(50% - 6px) !important;
+    width: calc(50% - 8px) !important;
     height: 240px !important;
     border-radius: 12px;
   }
 
-  /* Khung Nhẫn (Ảnh tròn) */
   .ring {
     position: relative !important;
     left: auto !important; top: auto !important;
@@ -376,7 +346,6 @@
     padding: 7px;
   }
 
-  /* Dải cuộn ảnh ngang (PAX) */
   .strip {
     position: relative !important;
     left: auto !important; top: auto !important;
@@ -385,20 +354,18 @@
     gap: 8px;
     margin: 8px 0;
   }
+  .stripImg { height: 180px; border-radius: 10px; }
 
-  .stripImg {
-    height: 180px !important;
-    border-radius: 10px;
-  }
-
-  /* Button */
   .btn {
     position: relative !important;
     left: auto !important; top: auto !important;
-    height: 42px !important;
-    font-size: 18px !important;
+    height: 42px;
+    padding: 0 17px;
+    font-size: 18px;
+    gap: 8px;
     margin: 6px 0;
   }
+  .btn svg { width: 21px; height: 12px; }
 }
 
 @media (max-width: 767px) {
@@ -406,14 +373,14 @@
   .nav { font-size: 17px; gap: 6px 16px; }
   .pill { height: 38px; padding: 0 14px; font-size: 15px; }
 
-  .content { padding: 16px; gap: 14px; }          /* trước: 10px */
-  .text { font-size: 14px; line-height: 1.7; }    /* trước: 1.55 */
+  .content { padding: 16px; gap: 14px; }
+  .text { font-size: 14px; line-height: 1.7; }
   .textSm { font-size: 13px; }
-  
-  .pic { height: 210px !important; width: calc(50% - 5px) !important; }
+
+  .pic { height: 210px !important; width: calc(50% - 7px) !important; }
   .ring { width: 180px !important; height: 180px !important; flex-basis: 180px; }
   .strip { height: 150px !important; }
-  .stripImg { height: 150px !important; }
+  .stripImg { height: 150px; }
 }
 
 @media (max-width: 479px) {
@@ -426,9 +393,9 @@
   .content { padding: 14px; gap: 12px; border-radius: 14px; }
   .text { font-size: 13px; line-height: 1.7; }
   .textSm { font-size: 12px; }
-  
-  .pic { height: 170px !important; width: calc(50% - 4px) !important; }
+
+  .pic { height: 170px !important; width: calc(50% - 6px) !important; }
   .ring { width: min(70vw, 220px) !important; height: min(70vw, 220px) !important; flex-basis: min(70vw, 220px); }
   .strip { height: 120px !important; }
-  .stripImg { height: 120px !important; }
+  .stripImg { height: 120px; }
 }

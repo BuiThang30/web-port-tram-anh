@@ -1,25 +1,50 @@
-/* Figma 1920px -> code 1440px (mọi số px đã nhân 0.75). Chiều cao trang đổi theo từng tab (inline style). */
+/* =====================================================
+   Figma 1920px -> code 1440px (mọi số px đã nhân 0.75).
+   Chiều cao trang đổi theo từng tab (biến --h set từ TSX).
+
+   >= 1200px (desktop, 2K, 4K...):
+     toàn bộ khung 1440 x --h được scale bằng transform: scale(--s),
+     --s = bề ngang màn hình / 1440  => luôn vừa khít chiều ngang, không bị cắt/thừa.
+   1024 - 1199px: tablet 2 cột (menu trái thu hẹp, nội dung phải scale).
+   < 1024px: 1 cột.
+   ===================================================== */
 
 .page {
   --font-bubbles: var(--font-rubik), sans-serif;
   --font-content: var(--font-nexa), sans-serif;
 
   position: relative;
-  margin: 0 auto;
-  width: 1440px;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background: #464973;
   color: #fff;
   font-family: var(--font-content);
-  transition: height 0.35s ease;
 }
 
 .page * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Nền: rộng full 1440px, cắt từ TRÊN xuống hết chiều cao trang */
-.bg { object-fit: cover; object-position: top center; }
+.bg { object-fit: cover; object-position: top center; z-index: 0; }
 
-/* desktop: stage và canvas không tạo khung, mọi thứ định vị theo .page */
+/* Desktop: .scaler giữ chỗ đúng chiều cao sau khi scale; .frame là khung thiết kế */
+.scaler {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: calc(var(--h) * var(--s) * 1px);
+  overflow: hidden;
+}
+
+.frame {
+  position: relative;
+  width: 1440px;
+  height: calc(var(--h) * 1px);
+  transform: scale(var(--s));
+  transform-origin: 0 0;
+}
+
+/* stage và canvas không tạo khung, mọi thứ định vị theo .frame */
 .stage, .canvas { display: contents; }
 
 /* ===== Kính ===== */
@@ -66,10 +91,10 @@
 
 .text {
   position: absolute;
-  font-size: 15px;          /* 20px */
+  font-size: 15px;
   font-weight: 400;
-  line-height: 24px;        /* trước: 18.75px */
-  letter-spacing: 0.01em;   /* thêm: chữ thoáng hơn */
+  line-height: 24px;
+  letter-spacing: 0.01em;
 }
 
 .center { text-align: center; }
@@ -160,7 +185,7 @@
   border: none;
   background: none;
   font-family: var(--font-bubbles);
-  font-size: 19.5px;        /* 26px */
+  font-size: 19.5px;
   font-weight: 400;
   line-height: 23.4px;
   white-space: nowrap;
@@ -205,13 +230,13 @@
 .slideTitle {
   font-size: 21px;
   font-weight: 400;
-  line-height: 28px;        /* trước: 26px */
-  margin-bottom: 20px;      /* trước: 16px */
+  line-height: 28px;
+  margin-bottom: 20px;
 }
 
 .poem {
   font-size: 13.5px;
-  line-height: 21px;        /* trước: 17.25px */
+  line-height: 21px;
   letter-spacing: 0.01em;
   white-space: pre-line;
 }
@@ -233,7 +258,6 @@
 .slide_top    { flex-direction: column; gap: 16px; }
 .slide_bottom { flex-direction: column-reverse; gap: 16px; }
 .slide_top .slideImg, .slide_bottom .slideImg { width: 100%; height: 250px; }
-/* có poem2 -> 2 cột cố định; không có -> CSS tự chia 2 cột */
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
 .slide_top .slideText > .poem, .slide_bottom .slideText > .poem { columns: 2; column-gap: 30px; }
 
@@ -313,29 +337,26 @@
 @media (prefers-reduced-motion: reduce) {
   .content, .slide { animation: none; }
   .fadeImg { transition: none; }
-  .page, .panel, .pill, .nav a, .sub { transition: none; }
+  .panel, .pill, .nav a, .sub { transition: none; }
 }
 
 /* =====================================================
-   1024px -> 1439px
+   1024px -> 1199px: tablet 2 cột.
    Cột trái: breadcrumb / menu / nút (thu hẹp, nút tự xuống dòng).
    Cột phải: NGUYÊN bố cục Figma, phóng theo --s (tính trong page.tsx).
-   --left, --s, --cx, --h được set inline từ TSX.
    ===================================================== */
-@media (max-width: 1439px) {
+@media (max-width: 1199px) {
   .page {
-    width: 100%;
-    height: auto !important;       /* ghi đè height inline; chiều cao lấy từ .stage */
     display: grid;
     grid-template-columns: var(--left) minmax(0, 1fr);
     grid-template-rows: auto auto auto 1fr;
     column-gap: 24px;
     align-content: start;
     padding: 0 24px 32px;
-    overflow: hidden;
   }
 
-  .bg { z-index: 0; }
+  /* bỏ lớp scale của desktop, dùng grid + scale riêng của cột phải */
+  .scaler, .frame { display: contents; }
 
   .stage {
     display: block;
@@ -398,7 +419,7 @@
     padding: 8px 18px;
     font-size: clamp(14px, 1.4vw, 18px);
     line-height: 1.25;
-    white-space: normal;       /* nút dài tự xuống dòng */
+    white-space: normal;
     text-align: left;
     --r: 22px;
   }

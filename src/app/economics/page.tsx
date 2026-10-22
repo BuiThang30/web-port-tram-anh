@@ -64,8 +64,6 @@ const CONTENT: Record<Tab, { texts: Txt[]; pics: Pic[] }> = {
       { src: img('intro/photo-2'), l: 946.5, t: 54.75, w: 418.5, h: 234.75 },
     ],
   },
-  /* Bố cục theo hình mẫu: ảnh team + text 2 + slide talkshow ở cột trái,
-     text 1 + ảnh GenZ + text 3 ở cột phải */
   project: {
     texts: [
       { l: 958, t: 52,  w: 410, text: PROJECT_1 },
@@ -80,7 +78,7 @@ const CONTENT: Record<Tab, { texts: Txt[]; pics: Pic[] }> = {
   magazine: {
     texts: [{ l: 838.5, t: 67.5, w: 525, text: MAGAZINE }],
     pics: [
-      { src: img('magazine/interview'), l: 562.5, t: 66,     w: 258.75, h: 258.75 },
+      { src: img('magazine/interview'), l: 562.5, t: 66, w: 258.75, h: 258.75 },
     ],
   },
 };
@@ -131,7 +129,7 @@ function Slides({ srcs, box, interval = 3500 }: { srcs: string[]; box: Box; inte
           src={s}
           alt=""
           fill
-          sizes={`${Math.round(box.w)}px`}
+          sizes="(max-width: 1023px) 100vw, 60vw"
         />
       ))}
     </div>
@@ -144,96 +142,110 @@ export default function EconomicsPage() {
   const C = CONTENT[tab];
 
   return (
-    <main
-      className={`${styles.page} ${rubik.variable} ${nexa.variable} ${body.variable}`}
-      style={{ height: u(810), '--h': 810 } as CSSProperties}
-    >
-      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
+    <main className={`${styles.page} ${rubik.variable} ${nexa.variable} ${body.variable}`}>
+      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="100vw" priority />
 
-      <div className={styles.canvas}>
-        {PANELS[tab].map((p, i) => (
-          <div
-            key={i}
-            className={`${styles.glass} ${styles.panel}`}
-            style={{ left: u(p.left), top: u(p.top), width: u(p.width), height: u(p.height) }}
-          />
-        ))}
-
-        <div key={tab} className={styles.content}>
-          {C.texts.map((t) => (
-            <p
-              key={t.text}
-              className={styles.text}
-              style={{
-                left: u(t.l),
-                top: u(t.t),
-                width: u(t.w),
-                fontFamily: 'var(--font-body), sans-serif',
-                fontWeight: 600,
-                ...ord(t.t, true),
-              }}
-            >
-              {t.text}
-            </p>
-          ))}
-
-          {C.pics.map((p) => (
+      {/* .stage = khung thiết kế 1440x810, tự scale theo màn hình và căn giữa */}
+      <div className={styles.stage}>
+        <div className={styles.canvas}>
+          {PANELS[tab].map((p, i) => (
             <div
-              key={p.src}
-              className={styles.pic}
-              style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
-            >
-              <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
-            </div>
+              key={i}
+              className={`${styles.glass} ${styles.panel}`}
+              style={{ left: u(p.left), top: u(p.top), width: u(p.width), height: u(p.height) }}
+            />
           ))}
 
-          {tab === 'intro' && <Slides srcs={SHARKS} box={SHARK_BOX} interval={3500} />}
-          {tab === 'project' && <Slides srcs={TALKSHOWS} box={TALKSHOW_BOX} interval={4000} />}
-          {tab === 'magazine' && <Slides srcs={GAMES} box={GAME_BOX} interval={4500} />}
+          <div key={tab} className={styles.content}>
+            {C.texts.map((t) => (
+              <p
+                key={t.text}
+                className={styles.text}
+                style={{
+                  left: u(t.l),
+                  top: u(t.t),
+                  width: u(t.w),
+                  fontFamily: 'var(--font-body), sans-serif',
+                  fontWeight: 600,
+                  ...ord(t.t, true),
+                }}
+              >
+                {t.text}
+              </p>
+            ))}
 
-          {tab === 'magazine' && (
-            <a
-              className={`${styles.glass} ${styles.btn}`}
-              style={{ left: u(838.5), top: u(280.5), ...ord(280.5) }}
-              href={MAGAZINE_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              My Magazine
-              <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M1 8h26M20 1l7 7-7 7" />
-              </svg>
-            </a>
-          )}
+            {C.pics.map((p) => (
+              <div
+                key={p.src}
+                className={styles.pic}
+                style={{ left: u(p.l), top: u(p.t), width: u(p.w), height: u(p.h), ...ord(p.t) }}
+              >
+                <Image className={styles.cover} src={p.src} alt="" fill sizes="(max-width: 1023px) 50vw, 30vw" />
+              </div>
+            ))}
+
+            {tab === 'intro' && <Slides srcs={SHARKS} box={SHARK_BOX} interval={3500} />}
+            {tab === 'project' && <Slides srcs={TALKSHOWS} box={TALKSHOW_BOX} interval={4000} />}
+            {tab === 'magazine' && <Slides srcs={GAMES} box={GAME_BOX} interval={4500} />}
+
+            {tab === 'magazine' && (
+              <a
+                className={`${styles.glass} ${styles.btn}`}
+                style={{ left: u(838.5), top: u(280.5), ...ord(280.5) }}
+                href={MAGAZINE_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                My Magazine
+                <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M1 8h26M20 1l7 7-7 7" />
+                </svg>
+              </a>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className={`${styles.glass} ${styles.crumb}`}>
-        <Link href="/">Homepage</Link>
-        <span>&gt;</span>
-        <span>Economics</span>
-      </div>
+        <div className={`${styles.glass} ${styles.crumb}`}>
+          <Link href="/">Homepage</Link>
+          <span>&gt;</span>
+          <span>Economics</span>
+        </div>
 
-      <nav className={styles.nav}>
-        {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>
-            {n.label}
-          </Link>
-        ))}
-      </nav>
+        <nav className={styles.nav}>
+          {NAV.map((n) => (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={n.active ? styles.navActive : undefined}
+              /* Đang ở trang này mà bấm lại => không điều hướng, chỉ quay về tab intro */
+              onClick={
+                n.active
+                  ? (e) => {
+                      e.preventDefault();
+                      setTab('intro');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  : undefined
+              }
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
 
-      <div className={styles.pills}>
-        {PILLS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            aria-pressed={tab === p.id}
-            className={`${styles.glass} ${styles.pill} ${p.wrap ? styles.pillWrap : ''} ${tab === p.id ? styles.pillActive : ''}`}
-            onClick={() => toggleTab(p.id)}
-          >
-            {p.label}
-          </button>
-        ))}
+        <div className={styles.pills}>
+          {PILLS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-pressed={tab === p.id}
+              className={`${styles.glass} ${styles.pill} ${p.wrap ? styles.pillWrap : ''} ${tab === p.id ? styles.pillActive : ''}`}
+              onClick={() => toggleTab(p.id)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
       </div>
     </main>
   );

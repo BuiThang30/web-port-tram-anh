@@ -58,7 +58,6 @@ const PANEL: Record<Tab, PanelRect> = {
 
 /* ====== NỘI DUNG + VỊ TRÍ (tương đối so với panel) ====== */
 const CONTENT: Record<Tab, Content> = {
-  /* Ảnh 1: chữ nằm trên cùng trong panel, 3 vòng tròn xếp hàng ngang bên dưới */
   intro: {
     texts: [{ l: 165, t: 50, w: 555, text: INTRO, sm: true }],
     pics: [],
@@ -76,7 +75,6 @@ const CONTENT: Record<Tab, Content> = {
     ],
     rings: [],
   },
-  /* Ảnh 3: hàng trên 3 ảnh, hàng dưới 2 ảnh, lấp kín chiều ngang panel */
   ulis: {
     texts: [{ l: 24, t: 18, w: 702, text: ULIS_1, sm: true }],
     pics: [
@@ -88,7 +86,6 @@ const CONTENT: Record<Tab, Content> = {
     ],
     rings: [],
   },
-  /* Ảnh 5: poster và ảnh thuyết trình to, rộng full chiều ngang panel */
   granny: {
     texts: [{ l: 24, t: 14, w: 702, text: GRANNY, sm: true }],
     pics: [
@@ -146,7 +143,6 @@ function Strip({ srcs, panel }: { srcs: string[]; panel: PanelRect }) {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  /* Ảnh 7: dải ảnh cao hơn, bắt đầu sát lề trái panel và chạy tới mép phải */
   const L = 24;
   const T = 296;
   const W = 702;
@@ -179,115 +175,129 @@ export default function EducationPsychologyPage() {
   const P = PANEL[tab];
 
   return (
-    <main
-      className={`${styles.page} ${rubik.variable} ${nexa.variable} ${body.variable}`}
-      style={{ height: u(810), '--h': 810 } as CSSProperties}
-    >
-      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
+    <main className={`${styles.page} ${rubik.variable} ${nexa.variable} ${body.variable}`}>
+      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="100vw" priority />
 
-      <div className={styles.canvas}>
-        <div
-          className={`${styles.glass} ${styles.panel}`}
-          style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }}
-        />
+      {/* .stage = khung thiết kế 1440x810, tự scale theo màn hình và căn giữa */}
+      <div className={styles.stage}>
+        <div className={styles.canvas}>
+          <div
+            className={`${styles.glass} ${styles.panel}`}
+            style={{ left: u(P.left), top: u(P.top), width: u(P.width), height: u(P.height) }}
+          />
 
-        <div key={tab} className={styles.content}>
-          {C.texts.map((t) => (
-            <p
-              key={t.text}
-              className={`${styles.text} ${t.sm ? styles.textSm : ''}`}
-              style={{
-                left: u(P.left + t.l),
-                top: u(P.top + t.t),
-                width: u(t.w),
-                fontFamily: 'var(--font-body), sans-serif',
-                fontWeight: 600,
-                ...ord(t.t, true),
-              }}
-            >
-              {t.text}
-            </p>
-          ))}
+          <div key={tab} className={styles.content}>
+            {C.texts.map((t) => (
+              <p
+                key={t.text}
+                className={`${styles.text} ${t.sm ? styles.textSm : ''}`}
+                style={{
+                  left: u(P.left + t.l),
+                  top: u(P.top + t.t),
+                  width: u(t.w),
+                  fontFamily: 'var(--font-body), sans-serif',
+                  fontWeight: 600,
+                  ...ord(t.t, true),
+                }}
+              >
+                {t.text}
+              </p>
+            ))}
 
-          {C.pics.map((p) => (
-            <div
-              key={p.src}
-              className={styles.pic}
-              style={{
-                left: u(P.left + p.l),
-                top: u(P.top + p.t),
-                width: u(p.w),
-                height: u(p.h),
-                ...ord(p.t),
-              }}
-            >
-              <Image className={styles.cover} src={p.src} alt="" fill sizes={`${Math.round(p.w)}px`} />
-            </div>
-          ))}
-
-          {C.rings.map((r) => (
-            <div
-              key={r.src}
-              className={`${styles.glass} ${styles.ring}`}
-              style={{
-                left: u(P.left + r.l),
-                top: u(P.top + r.t),
-                width: u(r.d),
-                height: u(r.d),
-                ...ord(r.t),
-              }}
-            >
-              <div className={styles.ringInner}>
-                <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.d)}px`} />
+            {C.pics.map((p) => (
+              <div
+                key={p.src}
+                className={styles.pic}
+                style={{
+                  left: u(P.left + p.l),
+                  top: u(P.top + p.t),
+                  width: u(p.w),
+                  height: u(p.h),
+                  ...ord(p.t),
+                }}
+              >
+                <Image className={styles.cover} src={p.src} alt="" fill sizes="(max-width: 1023px) 50vw, 40vw" />
               </div>
-            </div>
-          ))}
+            ))}
 
-          {tab === 'vocarbit' && (
-            <a
-              className={`${styles.glass} ${styles.btn}`}
-              style={{ left: u(947.25), top: u(542.25), ...ord(542.25) }}
-              href={WEBSITE_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              My Website
-              <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M1 8h26M20 1l7 7-7 7" />
-              </svg>
-            </a>
-          )}
+            {C.rings.map((r) => (
+              <div
+                key={r.src}
+                className={`${styles.glass} ${styles.ring}`}
+                style={{
+                  left: u(P.left + r.l),
+                  top: u(P.top + r.t),
+                  width: u(r.d),
+                  height: u(r.d),
+                  ...ord(r.t),
+                }}
+              >
+                <div className={styles.ringInner}>
+                  <Image className={styles.cover} src={r.src} alt="" fill sizes="(max-width: 1023px) 200px, 25vw" />
+                </div>
+              </div>
+            ))}
 
-          {tab === 'pax' && <Strip srcs={PAX_IMGS} panel={P} />}
+            {tab === 'vocarbit' && (
+              <a
+                className={`${styles.glass} ${styles.btn}`}
+                style={{ left: u(947.25), top: u(542.25), ...ord(542.25) }}
+                href={WEBSITE_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                My Website
+                <svg width="21" height="12" viewBox="0 0 28 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M1 8h26M20 1l7 7-7 7" />
+                </svg>
+              </a>
+            )}
+
+            {tab === 'pax' && <Strip srcs={PAX_IMGS} panel={P} />}
+          </div>
         </div>
-      </div>
 
-      <div className={`${styles.glass} ${styles.crumb}`}>
-        <Link href="/">Homepage</Link>
-        <span>&gt;</span>
-        <span>Education and Psychology</span>
-      </div>
+        <div className={`${styles.glass} ${styles.crumb}`}>
+          <Link href="/">Homepage</Link>
+          <span>&gt;</span>
+          <span>Education and Psychology</span>
+        </div>
 
-      <nav className={styles.nav}>
-        {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={n.active ? styles.navActive : undefined}>
-            {n.label}
-          </Link>
-        ))}
-      </nav>
+        <nav className={styles.nav}>
+          {NAV.map((n) => (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={n.active ? styles.navActive : undefined}
+              /* Đang ở trang này mà bấm lại => không điều hướng, chỉ quay về tab intro */
+              onClick={
+                n.active
+                  ? (e) => {
+                      e.preventDefault();
+                      setTab('intro');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  : undefined
+              }
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
 
-      <div className={styles.pills}>
-        {PILLS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            aria-pressed={tab === p.id}
-            className={`${styles.glass} ${styles.pill} ${tab === p.id ? styles.pillActive : ''}`}
-            onClick={() => toggleTab(p.id)}
-          >
-            {p.label}
-          </button>
-        ))}
+        <div className={styles.pills}>
+          {PILLS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-pressed={tab === p.id}
+              className={`${styles.glass} ${styles.pill} ${tab === p.id ? styles.pillActive : ''}`}
+              onClick={() => toggleTab(p.id)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
       </div>
     </main>
   );

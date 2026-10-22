@@ -31,7 +31,7 @@ const WANDERER_1 =
   'Far from being isolated or lonely, I wander on my own for a much simpler reason: this “weird” habit gives me a pocket of peace to unwind and observe society. Loud bus horns and street vendors’ shouts once scared me because I thought peace required silence.';
 
 const WANDERER_2 =
-  'Yet, as time passed, I have realized that real peace blossoms within us anywhere we stand. My first ten-kilometer walk alone at seventeen has led me from bustling Hoan Kiem Lake, past serene West Lake, and straight to my family’s cozy apartment. Since that day, those solitary walks have become my compass, nurturing  my love for Hanoi and the adventurer’s blood in my veins.';
+  'Yet, as time passed, I have realized that real peace blossoms within us anywhere we stand. My first ten-kilometer walk alone at seventeen has led me from bustling Hoan Kiem Lake, past serene West Lake, and straight to my family’s cozy apartment. Since that day, those solitary walks have become my compass, nurturing  my love for Hanoi and the adventurer’s blood in my veins.';
 
 const FOOD_1 =
   'My story began in grade eight with a piping hot bowl of Hue beef noodles before extra English class. The vendor usually gave me extra pork knuckle and gently said, “Eat up, kids! You need fuel for studying!”. Time has made me fall deeply for the fermented shrimp paste, the tender trotter, and hardest with her warmth, which inspired my dream to bring this brimming bowl and a thousand Vietnamese dishes to less fortunate people worldwide. Above all, I hope the taste of my growing-up journey will soothe the souls that have yet to be fairly loved.';
@@ -125,6 +125,7 @@ const PILLS: { id: Exclude<Tab, 'intro'>; label: string }[] = [
 ];
 
 const NAV = [
+  { href: '/about', label: 'About me', active: true },
   { href: '/culture-arts', label: 'Culture and Arts' },
   { href: '/education-psychology', label: 'Education and Psychology' },
   { href: '/economics', label: 'Economics' },
@@ -150,7 +151,7 @@ function Slides({ srcs, d, interval = 3500 }: { srcs: string[]; d: number; inter
           src={s}
           alt=""
           fill
-          sizes={`${Math.round(d)}px`}
+          sizes="(max-width: 1199px) 300px, 25vw"
         />
       ))}
     </>
@@ -164,101 +165,130 @@ export default function AboutPage() {
   const toggle = (id: Tab) => setTab((cur) => (cur === id ? 'intro' : id));
 
   const p = PANEL[tab];
+  const circles = CIRCLES[tab];
 
   return (
     <main className={`${styles.about} ${rubik.variable} ${nexa.variable}`}>
-      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="1440px" priority />
+      <Image className={styles.bg} src="/image/background.png" alt="" fill sizes="100vw" priority />
 
-      {/* Khung kính bên phải */}
-      <div
-        className={`${styles.glass} ${styles.panel}`}
-        style={{ left: u(p.left), top: u(p.top), width: u(p.width), height: u(p.height) }}
-      />
+      {/* .stage = khung thiết kế 1440x810, tự scale theo màn hình và căn giữa */}
+      <div className={styles.stage}>
+        {/* Khung kính bên phải */}
+        <div
+          className={`${styles.glass} ${styles.panel}`}
+          style={{ left: u(p.left), top: u(p.top), width: u(p.width), height: u(p.height) }}
+        />
 
-      {/* Nội dung đổi theo tab (key để chạy lại hiệu ứng fade) */}
-      <div key={tab} className={styles.content}>
-        {tab === 'intro' && <h1 className={styles.title}>{INTRO_TITLE}</h1>}
+        {/* Nội dung đổi theo tab (key để chạy lại hiệu ứng fade) */}
+        <div key={tab} className={styles.content}>
+          {tab === 'intro' && <h1 className={styles.title}>{INTRO_TITLE}</h1>}
 
-        {TEXTS[tab].map((t) => (
-          <p
-            key={t.left + '-' + t.top}
-            className={styles.text}
-            style={{ left: u(t.left), top: u(t.top), width: u(t.width) }}
-          >
-            {t.text}
-          </p>
-        ))}
-
-        {CIRCLES[tab].map((c) => (
-          <div
-            key={c.srcs[0]}
-            className={`${styles.glass} ${styles.ring}`}
-            style={{ left: u(c.left), top: u(c.top), width: u(c.d), height: u(c.d) }}
-          >
-            <div className={styles.ringInner}>
-              <Slides srcs={c.srcs} d={c.d} interval={c.interval} />
-            </div>
-          </div>
-        ))}
-
-        {tab === 'food' &&
-          FOODS.map((f) => (
-            <Image
-              key={f.src}
-              className={styles.food}
-              src={f.src}
-              alt=""
-              width={Math.round(f.w * 2)}
-              height={Math.round(f.h * 2)}
-              sizes={`${Math.round(f.w)}px`}
-              style={{ left: u(f.left), top: u(f.top), width: u(f.w), height: u(f.h) }}
-            />
-          ))}
-
-        {tab === 'spiritual' &&
-          RECTS.map((r) => (
-            <div
-              key={r.src}
-              className={styles.rect}
-              style={{ left: u(r.left), top: u(r.top), width: u(r.w), height: u(r.h) }}
+          {TEXTS[tab].map((t) => (
+            <p
+              key={t.left + '-' + t.top}
+              className={styles.text}
+              style={{ left: u(t.left), top: u(t.top), width: u(t.width) }}
             >
-              <Image className={styles.cover} src={r.src} alt="" fill sizes={`${Math.round(r.w)}px`} />
-            </div>
+              {t.text}
+            </p>
           ))}
 
-        {tab === 'intro' && (
-          <Image className={styles.fish} src="/image/fish-about.png" alt="" width={205} height={235} />
-        )}
-      </div>
+          {circles.length > 0 && (
+            <div className={`${styles.group} ${tab === 'wanderer' ? styles.big : ''}`}>
+              {circles.map((c) => (
+                <div
+                  key={c.srcs[0]}
+                  className={`${styles.glass} ${styles.ring}`}
+                  style={{ left: u(c.left), top: u(c.top), width: u(c.d), height: u(c.d) }}
+                >
+                  <div className={styles.ringInner}>
+                    <Slides srcs={c.srcs} d={c.d} interval={c.interval} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-      {/* Breadcrumb */}
-      <div className={`${styles.glass} ${styles.crumb}`}>
-        <Link href="/">Homepage</Link>
-        <span>&gt;</span>
-        <span>About me</span>
-      </div>
+          {tab === 'food' && (
+            <div className={`${styles.group} ${styles.foods}`}>
+              {FOODS.map((f) => (
+                <Image
+                  key={f.src}
+                  className={styles.food}
+                  src={f.src}
+                  alt=""
+                  width={Math.round(f.w * 2)}
+                  height={Math.round(f.h * 2)}
+                  sizes="(max-width: 1199px) 460px, 35vw"
+                  style={{ left: u(f.left), top: u(f.top), width: u(f.w), height: u(f.h) }}
+                />
+              ))}
+            </div>
+          )}
 
-      {/* Menu trái */}
-      <nav className={styles.nav}>
-        <a className={styles.navActive} href="/about">About me</a>
-        {NAV.map((n) => (
-          <Link key={n.href} href={n.href}>{n.label}</Link>
-        ))}
-      </nav>
+          {tab === 'spiritual' && (
+            <div className={`${styles.group} ${styles.rects}`}>
+              {RECTS.map((r) => (
+                <div
+                  key={r.src}
+                  className={styles.rect}
+                  style={{ left: u(r.left), top: u(r.top), width: u(r.w), height: u(r.h) }}
+                >
+                  <Image className={styles.cover} src={r.src} alt="" fill sizes="(max-width: 1199px) 50vw, 30vw" />
+                </div>
+              ))}
+            </div>
+          )}
 
-      {/* 3 nút chuyển nội dung */}
-      <div className={styles.pills}>
-        {PILLS.map((pl) => (
-          <button
-            key={pl.id}
-            type="button"
-            aria-pressed={tab === pl.id}
-            className={`${styles.glass} ${styles.pill} ${tab === pl.id ? styles.pillActive : ''}`}
-            onClick={() => toggle(pl.id)}
-          >
-            {pl.label}
-          </button>
-        ))}
+          {tab === 'intro' && (
+            <Image className={styles.fish} src="/image/fish-about.png" alt="" width={205} height={235} />
+          )}
+        </div>
+
+        {/* Breadcrumb */}
+        <div className={`${styles.glass} ${styles.crumb}`}>
+          <Link href="/">Homepage</Link>
+          <span>&gt;</span>
+          <span>About me</span>
+        </div>
+
+        {/* Menu trái */}
+        <nav className={styles.nav}>
+          {NAV.map((n) => (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={n.active ? styles.navActive : undefined}
+              /* Đang ở trang này mà bấm lại => không điều hướng, chỉ quay về tab intro */
+              onClick={
+                n.active
+                  ? (e) => {
+                      e.preventDefault();
+                      setTab('intro');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  : undefined
+              }
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* 3 nút chuyển nội dung */}
+        <div className={styles.pills}>
+          {PILLS.map((pl) => (
+            <button
+              key={pl.id}
+              type="button"
+              aria-pressed={tab === pl.id}
+              className={`${styles.glass} ${styles.pill} ${tab === pl.id ? styles.pillActive : ''}`}
+              onClick={() => toggle(pl.id)}
+            >
+              {pl.label}
+            </button>
+          ))}
+        </div>
       </div>
     </main>
   );
