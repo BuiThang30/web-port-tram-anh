@@ -32,7 +32,7 @@ export default function Home() {
 
         {/* RƯƠNG KHO BÁU + MY RESUME (hover: mở rương và phát sáng) */}
         <a
-          href="https://drive.google.com/file/d/1glMa6InAyYpEPr57kD2A489sDIMhIcQ6/view"
+          href="https://drive.google.com/file/d/1-J8g_NVtxlC6b0B62-31h6gTsMzN1-Oo/view"
           className={styles.khoBauWrap}
           aria-label="My Resume"
           target="_blank"
